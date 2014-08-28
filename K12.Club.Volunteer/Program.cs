@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using K12.Data;
 using K12.Data.Configuration;
 using Campus.DocumentValidator;
+using K12.Club.Volunteer.API;
 
 namespace K12.Club.Volunteer
 {
@@ -82,10 +83,23 @@ namespace K12.Club.Volunteer
             if (UserPermission.Editable || UserPermission.Viewable)
                 ClubAdmin.Instance.AddDetailBulider(new FISCA.Presentation.DetailBulider<ClubImageItem>());
 
-            //社團基本資料
+            #region 社團基本資料
+
             UserPermission = FISCA.Permission.UserAcl.Current[Permissions.社團基本資料];
             if (UserPermission.Editable || UserPermission.Viewable)
-                ClubAdmin.Instance.AddDetailBulider(new FISCA.Presentation.DetailBulider<ClubDetailItem>());
+            {
+                IClubDetailItemAPI itemB = FISCA.InteractionService.DiscoverAPI<IClubDetailItemAPI>();
+                if (itemB != null)
+                {
+                    ClubAdmin.Instance.AddDetailBulider(itemB.CreateBasicInfo());
+                }
+                else
+                {
+                    ClubAdmin.Instance.AddDetailBulider(new FISCA.Presentation.DetailBulider<ClubDetailItem>());
+                }
+            } 
+
+            #endregion
 
             //社團限制
             UserPermission = FISCA.Permission.UserAcl.Current[Permissions.社團限制];

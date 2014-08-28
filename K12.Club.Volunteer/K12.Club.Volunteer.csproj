@@ -169,6 +169,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\IClubDetailItemAPI.cs" />
     <Compile Include="ClubAdminClub.cs" />
     <Compile Include="ClubAdminStudent.cs" />
     <Compile Include="ClubEvents.cs" />
@@ -617,6 +618,7 @@
     <Content Include="Library\FISCA.UDT.dll" />
     <Content Include="Library\FISCA.UDT.pdb" />
     <Content Include="Library\FISCA.UDT.xml" />
+    <Content Include="Library\FISCA.xml" />
     <Content Include="Library\IntelliSchool.DSA.ClientFramework.dll" />
     <Content Include="Library\IntelliSchool.DSA.ClientFramework.xml" />
     <Content Include="Library\K12.Data.dll" />
