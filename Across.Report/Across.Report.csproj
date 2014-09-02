@@ -70,11 +70,6 @@
       <HintPath>Library\FISCA.UDT.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="K12.Club.Volunteer, Version=1.0.2.13, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Library\K12.Club.Volunteer.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="K12.Data, Version=2.0.0.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Library\K12.Data.dll</HintPath>
@@ -119,6 +114,7 @@
     </Compile>
     <Compile Include="StudentRSRecord.cs" />
     <Compile Include="tool.cs" />
+    <Compile Include="UDT\ResultScoreRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EnglishSocietiesProveSingle.resx">
