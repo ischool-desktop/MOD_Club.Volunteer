@@ -340,19 +340,19 @@ namespace K12.Club.Volunteer
                     continue;
                 一名學生 一學生 = StudentDic[StudentID];
 
-                if (一學生.grade_year == "1" || 一學生.grade_year == "7")
+                if (一學生.grade_year == "1" || 一學生.grade_year == "7" || 一學生.grade_year == "10")
                 {
                     一社團._Now_ClubStudentCount++;
                     一社團._Now_GradeYear1++;
                     ran.AllocationSucceeds = true;
                 }
-                else if (一學生.grade_year == "2" || 一學生.grade_year == "8")
+                else if (一學生.grade_year == "2" || 一學生.grade_year == "8" || 一學生.grade_year == "11")
                 {
                     一社團._Now_ClubStudentCount++;
                     一社團._Now_GradeYear2++;
                     ran.AllocationSucceeds = true;
                 }
-                else if (一學生.grade_year == "3" || 一學生.grade_year == "9")
+                else if (一學生.grade_year == "3" || 一學生.grade_year == "9" || 一學生.grade_year == "12")
                 {
                     一社團._Now_ClubStudentCount++;
                     一社團._Now_GradeYear3++;
@@ -447,7 +447,7 @@ namespace K12.Club.Volunteer
 
                         if (一社團.男女限制 == 一學生.gender || 一社團.男女限制 == GetVolunteerData.男女.不限制)
                         {
-                            if (一學生.grade_year == "1" || 一學生.grade_year == "7")
+                            if (一學生.grade_year == "1" || 一學生.grade_year == "7" || 一學生.grade_year == "10")
                             {
                                 if (一社團.一年級未滿)
                                 {
@@ -461,7 +461,7 @@ namespace K12.Club.Volunteer
                                     return true;
                                 }
                             }
-                            else if (一學生.grade_year == "2" || 一學生.grade_year == "8")
+                            else if (一學生.grade_year == "2" || 一學生.grade_year == "8" || 一學生.grade_year == "11")
                             {
                                 if (一社團.二年級未滿)
                                 {
@@ -475,7 +475,7 @@ namespace K12.Club.Volunteer
                                     return true;
                                 }
                             }
-                            else if (一學生.grade_year == "3" || 一學生.grade_year == "9")
+                            else if (一學生.grade_year == "3" || 一學生.grade_year == "9" || 一學生.grade_year == "12")
                             {
                                 if (一社團.三年級未滿)
                                 {
