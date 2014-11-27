@@ -198,11 +198,9 @@ namespace K12.Club.Volunteer
 
                             rsr.ClubName = cr.ClubName;
 
-                            bool check = false;
 
                             if (!string.IsNullOrEmpty(scj.Score))
                             {
-                                check = true;
                                 rsr.ResultScore = tool.GetDecimalValue(scj); //成績
                             }
 
@@ -211,7 +209,6 @@ namespace K12.Club.Volunteer
                             {
                                 if (CadreDic[cr.UID]._Cadre1.ContainsKey(sr.ID))
                                 {
-                                    check = true;
                                     rsr.CadreName = CadreDic[cr.UID]._Cadre1[sr.ID];
                                 }
                                 else
@@ -220,11 +217,9 @@ namespace K12.Club.Volunteer
                                 }
                             }
                             #endregion
-
-                            if (check)
-                            {
-                                InsertScoreList.Add(rsr);
-                            }
+                             
+                            InsertScoreList.Add(rsr);
+                            
                         }
                         #endregion
                     }
@@ -322,7 +317,7 @@ namespace K12.Club.Volunteer
 
             if (e.Cancelled)
             {
-                FISCA.Presentation.Controls.MsgBox.Show("結算操作已因錯誤中止!!");
+                FISCA.Presentation.Controls.MsgBox.Show("結算操作已中止!");
             }
             else
             {

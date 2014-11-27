@@ -131,7 +131,6 @@ namespace K12.Club.Volunteer
                     IsStudentList.Add(re);
                 }
             }
-
         }
 
         void BGW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
