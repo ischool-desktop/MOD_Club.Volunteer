@@ -356,6 +356,7 @@ namespace AllProveReport.Report
                     list.Add(obj.SchoolYear.ToString());
                     list.Add(obj.Semester.ToString());
                     list.Add(obj.ClubName);
+                    list.Add(obj.CadreName);
 
                     foreach (string listEach in list)
                     {

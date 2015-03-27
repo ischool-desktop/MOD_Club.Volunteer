@@ -37,6 +37,7 @@
             this.btnClose = new DevComponents.DotNetBar.ButtonX();
             this.lbHelp2 = new DevComponents.DotNetBar.LabelX();
             this.checkBoxX1 = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.checkBoxX2 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             ((System.ComponentModel.ISupportInitialize)(this.intSchoolYear)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.intSemester)).BeginInit();
             this.SuspendLayout();
@@ -52,9 +53,10 @@
             this.lbHelp1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.lbHelp1.Location = new System.Drawing.Point(15, 84);
             this.lbHelp1.Name = "lbHelp1";
-            this.lbHelp1.Size = new System.Drawing.Size(259, 56);
+            this.lbHelp1.Size = new System.Drawing.Size(286, 91);
             this.lbHelp1.TabIndex = 5;
-            this.lbHelp1.Text = "說明：\r\n1.本功能將會複製社團至下一個學年度學期\r\n2.如果下學期已有相同社團,會略過此社團";
+            this.lbHelp1.Text = "說明：\r\n1.本功能將會複製社團至下一個學年度學期\r\n(目標學年期已自動加一學期,複製開始前請確認)\r\n2.如果下學期已有相同社團,會略過此社團\r\n3.下學期如未" +
+    "選社,可參考勾選以下項目:";
             // 
             // lbSchoolYear
             // 
@@ -130,7 +132,7 @@
             this.btnStart.AutoSize = true;
             this.btnStart.BackColor = System.Drawing.Color.Transparent;
             this.btnStart.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnStart.Location = new System.Drawing.Point(210, 189);
+            this.btnStart.Location = new System.Drawing.Point(213, 245);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 25);
             this.btnStart.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -144,7 +146,7 @@
             this.btnClose.AutoSize = true;
             this.btnClose.BackColor = System.Drawing.Color.Transparent;
             this.btnClose.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnClose.Location = new System.Drawing.Point(291, 189);
+            this.btnClose.Location = new System.Drawing.Point(294, 245);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 25);
             this.btnClose.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -177,18 +179,37 @@
             // 
             this.checkBoxX1.BackgroundStyle.Class = "";
             this.checkBoxX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.checkBoxX1.Location = new System.Drawing.Point(13, 153);
+            this.checkBoxX1.Location = new System.Drawing.Point(35, 183);
             this.checkBoxX1.Name = "checkBoxX1";
-            this.checkBoxX1.Size = new System.Drawing.Size(293, 21);
+            this.checkBoxX1.Size = new System.Drawing.Size(100, 20);
             this.checkBoxX1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.checkBoxX1.TabIndex = 8;
-            this.checkBoxX1.Text = "複製社團學生(下學期如未選社,可勾選此項目)";
+            this.checkBoxX1.Text = "複製社團<b><u>學生</u></b>";
+            this.checkBoxX1.CheckedChanged += new System.EventHandler(this.checkBoxX1_CheckedChanged);
+            // 
+            // checkBoxX2
+            // 
+            this.checkBoxX2.AutoSize = true;
+            this.checkBoxX2.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.checkBoxX2.BackgroundStyle.Class = "";
+            this.checkBoxX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.checkBoxX2.Enabled = false;
+            this.checkBoxX2.Location = new System.Drawing.Point(35, 210);
+            this.checkBoxX2.Name = "checkBoxX2";
+            this.checkBoxX2.Size = new System.Drawing.Size(213, 20);
+            this.checkBoxX2.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.checkBoxX2.TabIndex = 9;
+            this.checkBoxX2.Text = "複製社團<b><u>幹部</u></b>(複製學生需被勾選)";
             // 
             // CopyClub
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(379, 224);
+            this.ClientSize = new System.Drawing.Size(379, 279);
+            this.Controls.Add(this.checkBoxX2);
             this.Controls.Add(this.checkBoxX1);
             this.Controls.Add(this.lbHelp2);
             this.Controls.Add(this.btnClose);
@@ -198,6 +219,7 @@
             this.Controls.Add(this.lbSemester);
             this.Controls.Add(this.lbSchoolYear);
             this.Controls.Add(this.lbHelp1);
+            this.DoubleBuffered = true;
             this.Name = "CopyClub";
             this.Text = "複製社團";
             this.Load += new System.EventHandler(this.CopyClub_Load);
@@ -219,5 +241,6 @@
         private DevComponents.DotNetBar.ButtonX btnClose;
         private DevComponents.DotNetBar.LabelX lbHelp2;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX1;
+        private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX2;
     }
 }

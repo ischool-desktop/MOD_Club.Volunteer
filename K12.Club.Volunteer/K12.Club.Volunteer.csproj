@@ -64,6 +64,11 @@
       <HintPath>Library\Campus.Import.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Campus.IRewrite.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Library\Campus.IRewrite.Interface.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Campus.Report, Version=1.0.0.11, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Library\Campus.Report.dll</HintPath>
@@ -128,6 +133,11 @@
       <HintPath>Library\IntelliSchool.DSA.ClientFramework.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="IRewriteAPI_CLUB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Library\IRewriteAPI_CLUB.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="K12.Data, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Library\K12.Data.dll</HintPath>
@@ -169,7 +179,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\IClubDetailItemAPI.cs" />
     <Compile Include="ClubAdminClub.cs" />
     <Compile Include="ClubAdminStudent.cs" />
     <Compile Include="ClubEvents.cs" />
@@ -203,6 +212,7 @@
     <Compile Include="ClubExtendControls\ClubStudent.Designer.cs">
       <DependentUpon>ClubStudent.cs</DependentUpon>
     </Compile>
+    <Compile Include="ClubExtendControls\ClubStudObj.cs" />
     <Compile Include="ClubExtendControls\ScJoinMag.cs" />
     <Compile Include="ClubExtendControls\StudentResultItem.cs">
       <SubType>UserControl</SubType>
@@ -586,6 +596,8 @@
     <Content Include="Library\Campus.Import.dll" />
     <Content Include="Library\Campus.Import.pdb" />
     <Content Include="Library\Campus.Import.xml" />
+    <Content Include="Library\Campus.IRewrite.Interface.dll" />
+    <Content Include="Library\Campus.IRewrite.Interface.pdb" />
     <Content Include="Library\Campus.Report.dll" />
     <Content Include="Library\Campus.Report.pdb" />
     <Content Include="Library\Campus.Windows.dll" />

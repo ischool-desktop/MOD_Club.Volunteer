@@ -95,6 +95,10 @@ namespace K12.Club.Volunteer
             {
                 PriontName = "班級社團成績不及格(確認單)";
             }
+            else
+            {
+                PriontName = "班級社團成績單";
+            }
 
             Workbook prototype = new Workbook();
             prototype.Copy(template);
@@ -211,24 +215,15 @@ namespace K12.Club.Volunteer
                 {
                     ws.Cells.CreateRange(dataIndex, 1, false).Copy(ptEachRow);
 
-                    tool.SetCellBro(ws, dataIndex, 0, 1, 1);
                     ws.Cells[dataIndex, 0].PutValue(each.studentRecord.SeatNo.HasValue ? each.studentRecord.SeatNo.Value.ToString() : "");
-                    tool.SetCellBro(ws, dataIndex, 1, 1, 1);
                     ws.Cells[dataIndex, 1].PutValue(each.studentRecord.Name);
-                    tool.SetCellBro(ws, dataIndex, 2, 1, 1);
                     ws.Cells[dataIndex, 2].PutValue(each.studentRecord.StudentNumber);
-                    tool.SetCellBro(ws, dataIndex, 3, 1, 1);
                     ws.Cells[dataIndex, 3].PutValue(each.studentRecord.Gender);
 
                     //社團
                     if (each.club != null)
                     {
-                        tool.SetCellBro(ws, dataIndex, 4, 1, 1);
                         ws.Cells[dataIndex, 4].PutValue(each.club.ClubName);
-                    }
-                    else
-                    {
-                        tool.SetCellBro(ws, dataIndex, 4, 1, 1);
                     }
 
                     if (each.SCJoin != null)
@@ -245,67 +240,46 @@ namespace K12.Club.Volunteer
                                 string name = each1.GetAttribute("Name");
                                 if (評.ColumnDic.ContainsKey(name))
                                 {
-                                    tool.SetCellBro(ws, dataIndex, DetalIndex + 評.ColumnDic[name] + 1, 1, 1);
                                     ws.Cells[dataIndex, DetalIndex + 評.ColumnDic[name]].PutValue(each1.GetAttribute("Score"));
                                 }
                             }
 
-                            if (評.ColumnDic.Count > x)
-                            {
-                                for (int y = x; y < 評.ColumnDic.Count; y++)
-                                {
-                                    tool.SetCellBro(ws, dataIndex, DetalIndex + y + 1, 1, 1);
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            for (int x = 3; x < ColumnNameList.Count; x++)
-                            {
-                                tool.SetCellBro(ws, dataIndex, x, 1, 1);
-                            }
                         }
                     }
-                    else
+
+                    for (int x = 3; x < ColumnNameList.Count; x++)
                     {
-                        for (int x = 3; x < ColumnNameList.Count; x++)
-                        {
-                            tool.SetCellBro(ws, dataIndex, x, 1, 1);
-                        }
+                        tool.SetCellBro(ws, dataIndex, x, 1, 1);
                     }
 
                     //學期成績
                     if (PrintLost) //不及格確認單
                     {
                         ws.Cells.SetColumnWidth(ColumnNameList.Count - 1, 14);
-                        tool.SetCellBro(ws, dataIndex, ColumnNameList.Count - 2, 1, 1);
 
                         if (each.RSR != null)
                         {
-                            tool.SetCellBro(ws, dataIndex, ColumnNameList.Count - 2, 1, 1);
                             ws.Cells.SetColumnWidth(ColumnNameList.Count - 2, 8);
                             string Score = each.RSR.ResultScore.HasValue ? each.RSR.ResultScore.Value.ToString() : "";
                             ws.Cells[dataIndex, ColumnNameList.Count - 2].PutValue(Score);
                         }
                         else
                         {
-                            tool.SetCellBro(ws, dataIndex, ColumnNameList.Count - 2, 1, 1);
+
                         }
                     }
                     else
                     {
                         if (each.RSR != null) //有學期成績
                         {
-                            tool.SetCellBro(ws, dataIndex, ColumnNameList.Count - 1, 1, 1);
 
                             ws.Cells.SetColumnWidth(ColumnNameList.Count - 1, 8);
                             string Score = each.RSR.ResultScore.HasValue ? each.RSR.ResultScore.Value.ToString() : "";
                             ws.Cells[dataIndex, ColumnNameList.Count - 1].PutValue(Score);
                         }
-                        else //無學期成績
+                        else
                         {
-                            tool.SetCellBro(ws, dataIndex, ColumnNameList.Count - 1, 1, 1);
+
                         }
                     }
 
@@ -379,6 +353,11 @@ namespace K12.Club.Volunteer
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void checkBoxX1_CheckedChanged(object sender, EventArgs e)
+        {
+            labelX1.Visible = checkBoxX1.Checked;
         }
     }
 }

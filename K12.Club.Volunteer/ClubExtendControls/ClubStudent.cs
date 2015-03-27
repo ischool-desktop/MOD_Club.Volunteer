@@ -12,6 +12,7 @@ using FISCA.Data;
 using FISCA.UDT;
 using FISCA.LogAgent;
 using FISCA.Permission;
+using FISCA.Presentation.Controls;
 
 namespace K12.Club.Volunteer
 {
@@ -23,16 +24,10 @@ namespace K12.Club.Volunteer
         private BackgroundWorker BGW = new BackgroundWorker();
         private bool BkWBool = false;
 
-        private List<string> ReMoveTemp = new List<string>(); //已加入的學生ID清單
-        List<SCJoin> ReDoubleTemp = new List<SCJoin>();
         Dictionary<string, StudentRecord> studentDic = new Dictionary<string, StudentRecord>();
-        Dictionary<string, StudentRecord> LogStudentList = new Dictionary<string, StudentRecord>();
 
 
         Dictionary<string, ClassRecord> ClassDic = new Dictionary<string, ClassRecord>();
-
-        private AccessHelper _AccessHelper = new AccessHelper();
-        private QueryHelper _QueryHelper = new QueryHelper();
 
         //權限
         internal static FeatureAce UserPermission;
@@ -41,6 +36,8 @@ namespace K12.Club.Volunteer
         CLUBRecord _CLUBRecord = new CLUBRecord();
 
         ScJoinMag scMAG;
+
+        ClubStudObj cso { get; set; }
 
         public ClubStudent()
         {
@@ -76,7 +73,7 @@ namespace K12.Club.Volunteer
 
         void BGW_DoWork(object sender, DoWorkEventArgs e)
         {
-            List<CLUBRecord> ClubPrimaryList = _AccessHelper.Select<CLUBRecord>(string.Format("UID = '{0}'", this.PrimaryKey));
+            List<CLUBRecord> ClubPrimaryList = tool._A.Select<CLUBRecord>(string.Format("UID = '{0}'", this.PrimaryKey));
             if (ClubPrimaryList.Count != 1)
             {
                 //如果取得2門以上 或 沒取得社團時
@@ -144,6 +141,10 @@ namespace K12.Club.Volunteer
             #endregion
         }
 
+        /// <summary>
+        /// 傳入學生後
+        /// 設定ListView內容
+        /// </summary>
         private ListViewItem SetListView(StudentRecord STUD)
         {
             #region 依學生建立ListView
@@ -266,8 +267,6 @@ namespace K12.Club.Volunteer
         /// <summary>
         /// 開啟下拉式選單時...
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnInserStudent_PopupOpen(object sender, EventArgs e)
         {
             //建立待處理學生在按鈕內
@@ -285,7 +284,7 @@ namespace K12.Club.Volunteer
         }
 
         /// <summary>
-        /// 從待處理學生,調整下拉式按鈕
+        /// 建立待處理學生在按鈕內
         /// </summary>
         private void CreateStudentMenuItem()
         {
@@ -336,6 +335,17 @@ namespace K12.Club.Volunteer
             }
         }
 
+        #region 加入修課清單
+
+        /// <summary>
+        /// 將所有待處理學生都加入本社團
+        /// </summary>
+        private void btnInserStudent_Click(object sender, EventArgs e)
+        {
+            //將待處理學生加入修課清單
+            AddListViewInTemp(K12.Presentation.NLDPanels.Student.TempSource);
+        }
+
         /// <summary>
         /// 當使用者點擊下拉式清單內任意學生時...
         /// 將此學生加入課程
@@ -343,11 +353,18 @@ namespace K12.Club.Volunteer
         void item_Click(object sender, EventArgs e)
         {
             ButtonItem each = (ButtonItem)sender;
-            StudentRecord eachTag = (StudentRecord)each.Tag;
-            List<string> list = new List<string>();
-            list.Add(eachTag.ID);
+            if (each.Tag != null)
+            {
+                StudentRecord eachTag = (StudentRecord)each.Tag;
+                List<string> list = new List<string>();
+                list.Add(eachTag.ID);
 
-            AddListViewInTemp(list);
+                AddListViewInTemp(list);
+            }
+            else
+            {
+                MsgBox.Show("未選擇學生...");
+            }
         }
 
         /// <summary>
@@ -355,33 +372,95 @@ namespace K12.Club.Volunteer
         /// </summary>
         private void AddListViewInTemp(List<string> IsSaft)
         {
-            ReMoveTemp.Clear();
-            ReDoubleTemp.Clear();
-            StringBuilder sb_Message = new StringBuilder();
-            //Log
-
             if (IsSaft.Count != 0)
             {
+                cso = new ClubStudObj();
+
+                //Log
+                StringBuilder sb_Message = new StringBuilder();
+
                 #region 可加入的學生清單
 
-                List<string> InsertList = CheckTempStudentInCourse(IsSaft); //排除已存在學生
+                //排除已存在本課程的學生
+                cso.CheckTempStudentInCourse(IsSaft, scMAG.SCJoin_Dic, _CLUBRecord);
 
                 StringBuilder sb_Log = new StringBuilder();
-                sb_Log.AppendLine(string.Format("加入「{0}」名社團參與學生：(學年度「{1}」學期「{2}」社團「{3}」)", InsertList.Count.ToString(), _CLUBRecord.SchoolYear.ToString(), _CLUBRecord.Semester.ToString(), _CLUBRecord.ClubName));
+                sb_Log.AppendLine(string.Format("加入「{0}」名社團參與學生：(學年度「{1}」學期「{2}」社團「{3}」)", cso.InsertList.Count.ToString(), _CLUBRecord.SchoolYear.ToString(), _CLUBRecord.Semester.ToString(), _CLUBRecord.ClubName));
 
-                if (InsertList.Count != 0)
+                if (cso.ReMoveTemp.Count != 0)
                 {
-                    List<StudentRecord> studList = Student.SelectByIDs(InsertList);
-                    foreach (StudentRecord sr in studList)
+                    #region 是否有重覆加入本社學生 - 錯誤
+
+                    sb_Message.AppendLine("共有" + cso.ReMoveTemp.Count + "名學生,存在本社團!!");
+                    List<StudentRecord> studlist = Student.SelectByIDs(cso.ReMoveTemp);
+                    studlist = SortClassIndex.K12Data_StudentRecord(studlist);
+                    foreach (StudentRecord stud in studlist)
                     {
-                        if (!LogStudentList.ContainsKey(sr.ID))
-                        {
-                            LogStudentList.Add(sr.ID, sr);
-                        }
+                        string class_981 = string.IsNullOrEmpty(stud.RefClassID) ? "" : stud.Class.Name;
+                        string SeatNo_981 = stud.SeatNo.HasValue ? stud.SeatNo.Value.ToString() : "";
+                        sb_Message.AppendLine("班級「" + class_981 + "」座號「" + SeatNo_981 + "」姓名「" + stud.Name + "」");
                     }
 
+                    #endregion
+
+                    MsgBox.Show(sb_Message.ToString(), "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (cso.ReDoubleTemp.Count != 0)
+                {
+                    #region 重覆參與其它社團記錄 -警告
+
+                    sb_Message.AppendLine("共有" + cso.ReDoubleTemp.Count + "筆,重覆參與其它社團記錄");
+
+
+                    //取得重覆社團
+                    List<CLUBRecord> cludlist = tool._A.Select<CLUBRecord>("uid in ('" + string.Join("','", cso.GetClubID()) + "')");
+                    Dictionary<string, CLUBRecord> clubDic = new Dictionary<string, CLUBRecord>();
+                    foreach (CLUBRecord each in cludlist)
+                    {
+                        if (!clubDic.ContainsKey(each.UID))
+                            clubDic.Add(each.UID, each);
+
+                    }
+
+                    studentDic.Clear();
+                    foreach (StudentRecord each in Student.SelectByIDs(cso.GetStudentID()))
+                    {
+                        if (!studentDic.ContainsKey(each.ID))
+                            studentDic.Add(each.ID, each);
+
+                    }
+                    cso.ReDoubleTemp.Sort(SortSCJ);
+                    foreach (SCJoin SCJ in cso.ReDoubleTemp)
+                    {
+                        StudentRecord stud = studentDic[SCJ.RefStudentID];
+                        CLUBRecord cr = clubDic[SCJ.RefClubID];
+
+                        string class_981 = string.IsNullOrEmpty(stud.RefClassID) ? "" : stud.Class.Name;
+                        string SeatNo_981 = stud.SeatNo.HasValue ? stud.SeatNo.Value.ToString() : "";
+                        sb_Message.AppendLine("班級「" + class_981 + "」座號「" + SeatNo_981 + "」姓名「" + stud.Name + "」重覆社團「" + cr.ClubName + "」");
+                    }
+
+                    #endregion
+
+                    DialogResult dr = MsgBox.Show(sb_Message.ToString() + "\n您是否要繼續進行此作業?", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (dr != DialogResult.Yes)
+                    {
+                        MsgBox.Show("作業已中止!!");
+                        return;
+                    }
+                }
+
+                if (cso.InsertList.Count != 0)
+                {
+                    #region InsertList
+
+                    //取得Log學生物件
+                    cso.GetLogStudent();
+
                     List<SCJoin> SCJoinlist = new List<SCJoin>();
-                    foreach (string each in InsertList)
+                    foreach (string each in cso.InsertList)
                     {
                         SCJoin JHs = new SCJoin();
                         JHs.RefStudentID = each; //修課學生
@@ -396,182 +475,50 @@ namespace K12.Club.Volunteer
 
                     try
                     {
-                        _AccessHelper.InsertValues(SCJoinlist);
+                        tool._A.InsertValues(SCJoinlist);
                     }
                     catch (Exception ex)
                     {
-                        FISCA.Presentation.Controls.MsgBox.Show("新增社員資料失敗\n" + ex.Message);
+                        MsgBox.Show("新增社員資料失敗\n" + ex.Message);
                         SmartSchool.ErrorReporting.ReportingService.ReportException(ex);
                         return;
                     }
 
                     //移出待處理
                     StringBuilder sbHelp = new StringBuilder();
-                    sbHelp.AppendLine("已由待處理加入社員\n共「" + InsertList.Count.ToString() + "」名學生\n");
-                    FISCA.Presentation.Controls.MsgBox.Show(sbHelp.ToString());
+                    sbHelp.AppendLine("已由待處理加入社員\n共「" + cso.InsertList.Count.ToString() + "」名學生\n");
+                    MsgBox.Show(sbHelp.ToString());
+
                     FISCA.LogAgent.ApplicationLog.Log("社團", "加入社員", sb_Log.ToString());
-                    K12.Presentation.NLDPanels.Student.RemoveFromTemp(InsertList);
+                    K12.Presentation.NLDPanels.Student.RemoveFromTemp(cso.InsertList);
 
                     ClubEvents.RaiseAssnChanged();
-                }
 
-                if (ReMoveTemp.Count != 0)
-                {
-                    sb_Message.AppendLine("共有" + ReMoveTemp.Count + "名學生,存在本社團!!");
-                    List<StudentRecord> studlist = Student.SelectByIDs(ReMoveTemp);
-                    studlist = SortClassIndex.K12Data_StudentRecord(studlist);
-                    foreach (StudentRecord stud in studlist)
-                    {
-                        string class_981 = string.IsNullOrEmpty(stud.RefClassID) ? "" : stud.Class.Name;
-                        string SeatNo_981 = stud.SeatNo.HasValue ? stud.SeatNo.Value.ToString() : "";
-                        sb_Message.AppendLine("班級「" + class_981 + "」座號「" + SeatNo_981 + "」姓名「" + stud.Name + "」");
-                    }
-                }
-
-                if (ReDoubleTemp.Count != 0)
-                {
-                    sb_Message.AppendLine("共有" + ReDoubleTemp.Count + "筆,重覆參與其它社團記錄");
-                    List<string> clubIdList = ReDoubleTemp.Select(x => x.RefClubID).ToList();
-                    List<string> studentIdList = ReDoubleTemp.Select(x => x.RefStudentID).ToList();
-                    //取得重覆社團
-                    List<CLUBRecord> cludlist = _AccessHelper.Select<CLUBRecord>("uid in ('" + string.Join("','", clubIdList) + "')");
-                    Dictionary<string, CLUBRecord> clubDic = new Dictionary<string, CLUBRecord>();
-                    foreach (CLUBRecord each in cludlist)
-                    {
-                        if (!clubDic.ContainsKey(each.UID))
-                            clubDic.Add(each.UID, each);
-
-                    }
-
-                    studentDic.Clear();
-                    foreach (StudentRecord each in Student.SelectByIDs(studentIdList))
-                    {
-                        if (!studentDic.ContainsKey(each.ID))
-                            studentDic.Add(each.ID, each);
-
-                    }
-                    ReDoubleTemp.Sort(SortSCJ);
-                    foreach (SCJoin SCJ in ReDoubleTemp)
-                    {
-                        StudentRecord stud = studentDic[SCJ.RefStudentID];
-                        CLUBRecord cr = clubDic[SCJ.RefClubID];
-
-                        string class_981 = string.IsNullOrEmpty(stud.RefClassID) ? "" : stud.Class.Name;
-                        string SeatNo_981 = stud.SeatNo.HasValue ? stud.SeatNo.Value.ToString() : "";
-                        sb_Message.AppendLine("班級「" + class_981 + "」座號「" + SeatNo_981 + "」姓名「" + stud.Name + "」重覆社團「" + cr.ClubName + "」");
-                    }
-                }
-
-                if (ReMoveTemp.Count != 0 || ReDoubleTemp.Count != 0)
-                {
-                    FISCA.Presentation.Controls.MsgBox.Show(sb_Message.ToString(), "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    #endregion
                 }
 
                 #endregion
             }
             else
             {
-                FISCA.Presentation.Controls.MsgBox.Show("請檢查\n1.待處理無學生\n2.學生狀態有誤(非一般生)");
+                string message = "請檢查\n1.待處理無學生\n2.學生狀態有誤(非一般生)";
+                FISCA.Presentation.Controls.MsgBox.Show(message);
             }
         }
 
-        private int SortSCJ(SCJoin scj1, SCJoin scj2)
-        {
-            StudentRecord sr1 = studentDic[scj1.RefStudentID];
-            StudentRecord sr2 = studentDic[scj2.RefStudentID];
+        #endregion
 
-            string stringStudent1 = (string.IsNullOrEmpty(sr1.RefClassID) ? "" : sr1.Class.Name).PadLeft(10);
-            string stringStudent2 = (string.IsNullOrEmpty(sr2.RefClassID) ? "" : sr2.Class.Name).PadLeft(10);
-
-            stringStudent1 += (sr1.SeatNo.HasValue ? sr1.SeatNo.Value.ToString() : "").PadLeft(10);
-            stringStudent2 += (sr2.SeatNo.HasValue ? sr2.SeatNo.Value.ToString() : "").PadLeft(10);
-
-            stringStudent1 += sr1.Name;
-            stringStudent2 += sr2.Name;
-
-            return stringStudent1.CompareTo(stringStudent2);
-        }
-
-        /// <summary>
-        /// 排除已存在於本社團之學生
-        /// </summary>
-        private List<string> CheckTempStudentInCourse(List<string> IsSaft)
-        {
-            //排除已加入本社團之學生
-            List<string> list = new List<string>();
-
-            //取得這些學生,是否有參與其他社團
-            List<SCJoin> scjList = _AccessHelper.Select<SCJoin>("ref_student_id in ('" + string.Join("','", IsSaft) + "')");
-            if (scjList.Count != 0)
-            {
-                List<string> clublilst = scjList.Select(x => x.RefClubID).ToList();
-                clublilst = clublilst.Distinct().ToList();
-                List<CLUBRecord> clublist = _AccessHelper.Select<CLUBRecord>("uid in ('" + string.Join("','", clublilst) + "')");
-                Dictionary<string, CLUBRecord> clubDic = new Dictionary<string, CLUBRecord>();
-                foreach (CLUBRecord each in clublist)
-                {
-                    if (!clubDic.ContainsKey(each.UID))
-                    {
-                        clubDic.Add(each.UID, each);
-                    }
-                }
-
-                foreach (SCJoin each in scjList)
-                {
-                    //增加判斷已不存在的社團
-                    if (!clubDic.ContainsKey(each.RefClubID))
-                        continue;
-
-                    if (each.RefClubID != _CLUBRecord.UID && clubDic[each.RefClubID].SchoolYear == _CLUBRecord.SchoolYear && clubDic[each.RefClubID].Semester == _CLUBRecord.Semester)
-                    {
-                        ReDoubleTemp.Add(each);
-                        if (IsSaft.Contains(each.RefStudentID))
-                        {
-                            IsSaft.Remove(each.RefStudentID);
-                        }
-                    }
-
-                }
-            }
-
-
-            foreach (string each in IsSaft)
-            {
-                if (!scMAG.SCJoin_Dic.ContainsKey(each))
-                {
-                    list.Add(each);
-                }
-                else
-                {
-                    ReMoveTemp.Add(each);
-                }
-            }
-
-            return list;
-        }
-
-        /// <summary>
-        /// 將選擇學生加入待處理
-        /// </summary>
-        private void toolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            List<string> list = new List<string>();
-
-            foreach (ListViewItem each in listViewEx1.SelectedItems)
-            {
-                if (each.Tag == null)
-                    continue;
-
-                SCJoin stud = (SCJoin)each.Tag;
-                list.Add(stud.RefStudentID);
-            }
-            K12.Presentation.NLDPanels.Student.AddToTemp(list);
-        }
+        #region 移除選擇學生
 
         /// <summary>
         /// 移除選擇學生
         /// </summary>
         private void btnClearStudent_Click(object sender, EventArgs e)
+        {
+            ClearStudent();
+        }
+
+        private void 移除選擇學生ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             ClearStudent();
         }
@@ -595,22 +542,26 @@ namespace K12.Club.Volunteer
             StringBuilder sb_Log = new StringBuilder();
             sb_Log.AppendLine(string.Format("已移除「{0}」名社團學生：(學年度「{1}」學期「{2}」社團「{3}」)", list.Count.ToString(), _CLUBRecord.SchoolYear.ToString(), _CLUBRecord.Semester.ToString(), _CLUBRecord.ClubName));
 
-            //List<string> stringList = list.Select(x => x.RefStudentID).ToList();
-            List<string> stringList = new List<string>();
+            List<string> StudentIDList = new List<string>();
+            List<string> ClubIDList = new List<string>();
             foreach (SCJoin each in list)
             {
-                if (!stringList.Contains(each.RefStudentID))
+                if (!StudentIDList.Contains(each.RefStudentID))
                 {
-                    stringList.Add(each.RefStudentID);
-
+                    StudentIDList.Add(each.RefStudentID);
                     //移除社團學生Log
                     if (!string.IsNullOrEmpty(GetLogMessage(each.RefStudentID)))
                         sb_Log.AppendLine(GetLogMessage(each.RefStudentID));
 
                 }
+
+                if (!ClubIDList.Contains(each.RefClubID))
+                {
+                    ClubIDList.Add(each.RefClubID);
+                }
             }
 
-            Dictionary<string, CadresRecord> CadresDic = GetCadreList(stringList);
+            Dictionary<string, CadresRecord> CadresDic = GetCadreList(StudentIDList, ClubIDList);
 
             //1.判斷該學生是否為本社社長
             //2.副社長
@@ -622,7 +573,7 @@ namespace K12.Club.Volunteer
             StringBuilder sb_Message = new StringBuilder();
             sb_Message.AppendLine("移除清單中包含擔任幹部記錄!!");
 
-            foreach (string each in stringList)
+            foreach (string each in StudentIDList)
             {
                 //社長
                 if (_CLUBRecord.President == each)
@@ -664,7 +615,7 @@ namespace K12.Club.Volunteer
 
                 if (dr1 == DialogResult.Yes)
                 {
-                    foreach (string each in stringList)
+                    foreach (string each in StudentIDList)
                     {
                         //社長
                         if (_CLUBRecord.President == each)
@@ -680,10 +631,10 @@ namespace K12.Club.Volunteer
                     }
                     //如果是社長副社長,就要更新一下資料
                     List<CLUBRecord> UpdataCLUBList = new List<CLUBRecord>() { _CLUBRecord };
-                    _AccessHelper.UpdateValues(UpdataCLUBList);
+                    tool._A.UpdateValues(UpdataCLUBList);
 
                     //刪除社團幹部
-                    _AccessHelper.DeletedValues(CadresDic.Values.ToList());
+                    tool._A.DeletedValues(CadresDic.Values.ToList());
                 }
                 else
                 {
@@ -693,7 +644,7 @@ namespace K12.Club.Volunteer
 
             try
             {
-                _AccessHelper.DeletedValues(list);
+                tool._A.DeletedValues(list);
             }
             catch (Exception ex)
             {
@@ -705,6 +656,8 @@ namespace K12.Club.Volunteer
             FISCA.LogAgent.ApplicationLog.Log("社團", "移除社團學生", sb_Log.ToString());
             ClubEvents.RaiseAssnChanged();
         }
+
+        #endregion
 
         /// <summary>
         /// 傳入學生ID,以取得Log字串
@@ -718,9 +671,9 @@ namespace K12.Club.Volunteer
             }
             else
             {
-                if (LogStudentList.ContainsKey(StudentID))
+                if (cso.LogStudentList.ContainsKey(StudentID))
                 {
-                    StudentRecord sr = LogStudentList[StudentID];
+                    StudentRecord sr = cso.LogStudentList[StudentID];
                     return GetStudentString(sr);
                 }
                 else
@@ -745,11 +698,14 @@ namespace K12.Club.Volunteer
         /// <summary>
         /// 透過學生清單,取得學生的幹部參與記錄
         /// </summary>
-        private Dictionary<string, CadresRecord> GetCadreList(List<string> stringList)
+        private Dictionary<string, CadresRecord> GetCadreList(List<string> StudentIDList, List<string> ClubIDList)
         {
             //透過學生ID單,取得社團幹部
             Dictionary<string, CadresRecord> CadresDic = new Dictionary<string, CadresRecord>();
-            List<CadresRecord> cadres = _AccessHelper.Select<CadresRecord>(string.Format("ref_student_id in ('" + string.Join("','", stringList) + "')"));
+            string Text1 = string.Join("','", StudentIDList);
+            string Text2 = string.Join("','", ClubIDList);
+
+            List<CadresRecord> cadres = tool._A.Select<CadresRecord>(string.Format("ref_student_id in ('{0}') and ref_club_id in ('{1}')", Text1, Text2));
             foreach (CadresRecord each in cadres)
             {
                 if (!CadresDic.ContainsKey(each.RefStudentID))
@@ -760,19 +716,52 @@ namespace K12.Club.Volunteer
             return CadresDic;
         }
 
+        #region 單純的程式碼
+
         /// <summary>
-        /// 將所有待處理學生都加入本社團
+        /// 將選擇學生加入待處理
         /// </summary>
-        private void btnInserStudent_Click(object sender, EventArgs e)
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            //將待處理學生加入修課清單
-            AddListViewInTemp(K12.Presentation.NLDPanels.Student.TempSource);
+            List<string> list = new List<string>();
+
+            foreach (ListViewItem each in listViewEx1.SelectedItems)
+            {
+                if (each.Tag == null)
+                    continue;
+
+                SCJoin stud = (SCJoin)each.Tag;
+                list.Add(stud.RefStudentID);
+            }
+            K12.Presentation.NLDPanels.Student.AddToTemp(list);
         }
 
         private void 清空學生待處理ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             K12.Presentation.NLDPanels.Student.RemoveFromTemp(K12.Presentation.NLDPanels.Student.TempSource);
         }
+
+        /// <summary>
+        /// 排序 參與學生 清單
+        /// </summary>
+        private int SortSCJ(SCJoin scj1, SCJoin scj2)
+        {
+            StudentRecord sr1 = studentDic[scj1.RefStudentID];
+            StudentRecord sr2 = studentDic[scj2.RefStudentID];
+
+            string stringStudent1 = (string.IsNullOrEmpty(sr1.RefClassID) ? "" : sr1.Class.Name).PadLeft(10);
+            string stringStudent2 = (string.IsNullOrEmpty(sr2.RefClassID) ? "" : sr2.Class.Name).PadLeft(10);
+
+            stringStudent1 += (sr1.SeatNo.HasValue ? sr1.SeatNo.Value.ToString() : "").PadLeft(10);
+            stringStudent2 += (sr2.SeatNo.HasValue ? sr2.SeatNo.Value.ToString() : "").PadLeft(10);
+
+            stringStudent1 += sr1.Name;
+            stringStudent2 += sr2.Name;
+
+            return stringStudent1.CompareTo(stringStudent2);
+        }
+
+        #endregion
 
         private void 鎖定學生選社ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -793,18 +782,10 @@ namespace K12.Club.Volunteer
                 }
                 item.SubItems[7].Text = "是";
             }
-            _AccessHelper.UpdateValues(scjList);
+            tool._A.UpdateValues(scjList);
 
             //Log
             LockStudent("鎖定學生選社", list);
-
-            //StringBuilder sb_Log = new StringBuilder();
-            //sb_Log.AppendLine(string.Format("已鎖定學生選社：(學年度「{0}」學期「{1}」社團「{2}」)", _CLUBRecord.SchoolYear.ToString(), _CLUBRecord.Semester.ToString(), _CLUBRecord.ClubName));
-            //foreach (StudentRecord each in studList)
-            //{
-            //    sb_Log.AppendLine(GetStudentString(each));
-            //}
-            //FISCA.LogAgent.ApplicationLog.Log("社團", "鎖定學生選社", sb_Log.ToString());
         }
 
         private void 移除選擇學生ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -826,26 +807,26 @@ namespace K12.Club.Volunteer
                 }
                 item.SubItems[7].Text = "　";
             }
-            _AccessHelper.UpdateValues(scjList);
+            tool._A.UpdateValues(scjList);
 
             LockStudent("解除鎖定選社", list);
         }
 
+        /// <summary>
+        /// 鎖定學生選社 or 解除鎖定選社
+        /// </summary>
         private void LockStudent(string name, List<string> list)
         {
             List<StudentRecord> studList = Student.SelectByIDs(list);
             StringBuilder sb_Log = new StringBuilder();
             sb_Log.AppendLine(string.Format("已{0}共「{1}」名學生：(學年度「{2}」學期「{3}」社團「{4}」)", name, list.Count.ToString(), _CLUBRecord.SchoolYear.ToString(), _CLUBRecord.Semester.ToString(), _CLUBRecord.ClubName));
+
             foreach (StudentRecord each in studList)
             {
                 sb_Log.AppendLine(GetStudentString(each));
             }
-            FISCA.LogAgent.ApplicationLog.Log("社團", name, sb_Log.ToString());
-        }
 
-        private void 移除選擇學生ToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            ClearStudent();
+            FISCA.LogAgent.ApplicationLog.Log("社團", name, sb_Log.ToString());
         }
     }
 }

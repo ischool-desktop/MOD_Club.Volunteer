@@ -9,18 +9,26 @@ namespace K12.Club.Volunteer
     {
 
         //社團
-        public CLUBRecord _cr { get; set; }
-        //社團學生清單
+        public CLUBRecord _Club { get; set; }
+
+        //社團學生參與清單
         public List<SCJoin> _scj { get; set; }
 
+        //社團學生幹部
+        public List<CadresRecord> _Cadres { get; set; }
+
         //新社團
-        public CLUBRecord _new_cr { get; set; }
-        //新社團記錄
+        public CLUBRecord _new_Club { get; set; }
+
+        //新社團學生參與清單
         public List<SCJoin> _new_scj { get; set; }
 
-        public CopyClubRecord(CLUBRecord cr)
+        //新社團學生幹部
+        public List<CadresRecord> _new_Cadres { get; set; }
+
+        public CopyClubRecord(CLUBRecord club)
         {
-            _cr = cr;
+            _Club = club;
             //建立一個社團 / 社團學生的物件
             //並且傳入新社團的相關資料
 
@@ -41,19 +49,50 @@ namespace K12.Club.Volunteer
         }
 
         /// <summary>
-        /// 建立學生的社團記錄Record
+        /// 設定本社團的社團幹部
+        /// </summary>
+        /// <param name="scj"></param>
+        public void SetSCJ(List<CadresRecord> cadres)
+        {
+            _Cadres = cadres;
+        }
+
+        /// <summary>
+        /// 取得新的參與學生清單
         /// </summary>
         public List<SCJoin> GetNewSCJoinList()
         {
             List<SCJoin> list = new List<SCJoin>();
-            if (_new_cr != null && _scj.Count != 0)
+            if (_new_Club != null && _scj.Count != 0)
             {
                 foreach (SCJoin each in _scj)
                 {
                     SCJoin scj = new SCJoin();
                     scj.RefStudentID = each.RefStudentID;
-                    scj.RefClubID = _new_cr.UID;
+                    scj.RefClubID = _new_Club.UID;
+                    scj.Lock = each.Lock; //鎖定
                     list.Add(scj);
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 取得新的社團幹部對象
+        /// </summary>
+        public List<CadresRecord> GetNewCadresList()
+        {
+            List<CadresRecord> list = new List<CadresRecord>();
+            if (_new_Club != null && _Cadres.Count != 0)
+            {
+                foreach (CadresRecord each in _Cadres)
+                {
+                    CadresRecord cadre = new CadresRecord();
+                    cadre.RefStudentID = each.RefStudentID; //學生
+                    cadre.CadreName = each.CadreName; //幹部名稱
+                    cadre.RefClubID = _new_Club.UID;
+
+                    list.Add(cadre);
                 }
             }
             return list;

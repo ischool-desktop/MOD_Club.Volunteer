@@ -22,6 +22,13 @@ namespace AllProveReport
                 cpr.ShowDialog();
             };
 
+            string URL社團參與證明單 = "ischool/產品/學生/報表/社團/社團參與證明單";
+            FISCA.Features.Register(URL社團參與證明單, arg =>
+            {
+                 ProveReport cpr = new ProveReport();
+                 cpr.ShowDialog();
+            });
+
             Catalog detail1 = RoleAclSource.Instance["學生"]["報表"];
             detail1.Add(new RibbonFeature(Permissions.社團參與證明單, "社團參與證明單"));
         }
