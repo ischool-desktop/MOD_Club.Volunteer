@@ -664,17 +664,31 @@ namespace K12.Club.Volunteer
         /// </summary>
         private string GetLogMessage(string StudentID)
         {
-            if (scMAG.StudentDic.ContainsKey(StudentID))
+            if (scMAG.StudentAllDic.ContainsKey(StudentID))
             {
-                StudentRecord sr = scMAG.StudentDic[StudentID];
+                StudentRecord sr = scMAG.StudentAllDic[StudentID];
                 return GetStudentString(sr);
             }
             else
             {
-                if (cso.LogStudentList.ContainsKey(StudentID))
+                if (cso != null)
                 {
-                    StudentRecord sr = cso.LogStudentList[StudentID];
-                    return GetStudentString(sr);
+                    if (cso.LogStudentList != null)
+                    {
+                        if (cso.LogStudentList.ContainsKey(StudentID))
+                        {
+                            StudentRecord sr = cso.LogStudentList[StudentID];
+                            return GetStudentString(sr);
+                        }
+                        else
+                        {
+                            return "";
+                        }
+                    }
+                    else
+                    {
+                        return "";
+                    }
                 }
                 else
                 {
