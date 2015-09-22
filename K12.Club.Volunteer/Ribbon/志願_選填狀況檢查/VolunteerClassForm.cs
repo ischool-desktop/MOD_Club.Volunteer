@@ -29,7 +29,9 @@ namespace K12.Club.Volunteer
         //取得狀態合理之學生基本資料(狀態一般/延修)
         Dictionary<string, 一名學生> StudentDic { get; set; }
 
-        //取得目前系統內Lock之學生清單
+        List<string> grade_yearList = new List<string>() { "1", "2", "3", "7", "8", "9", "10", "11", "12" };
+
+        //取得目前系統內社團學生資料
         Dictionary<string, SCJoin> SCJLockDic { get; set; }
 
         Dictionary<string, CLUBRecord> CLUBDic { get; set; }
@@ -95,6 +97,8 @@ namespace K12.Club.Volunteer
             BGW.ReportProgress(60, "取得社團選社限制...");
             CLUBCheckDic = GetCLUBCheckDic();
 
+            Increase(CLUBCheckDic, SCJLockDic);
+
             BGW.ReportProgress(75, "建立畫面資料樣式...");
             //取出班級
             foreach (社團志願分配的Row each in VolClassRowDic.Values)
@@ -130,6 +134,22 @@ namespace K12.Club.Volunteer
             _RowList = VolClassRowDic.Values.ToList();
             _RowList.Sort(SortClass);
             BGW.ReportProgress(100, "學生志願檢查完成!");
+        }
+
+        private void Increase(Dictionary<string, 一個社團檢查> CLUBCheckDic, Dictionary<string, SCJoin> SCJLockDic)
+        {
+            foreach (SCJoin stud in SCJLockDic.Values)
+            {
+                if (CLUBCheckDic.ContainsKey(stud.RefClubID))
+                {
+                    if (StudentDic.ContainsKey(stud.RefStudentID))
+                    {
+                        一個社團檢查 c =CLUBCheckDic[stud.RefClubID];
+                        一名學生 s = StudentDic[stud.RefStudentID];
+                        SetClubGradeYearCount(c, s, true);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -199,11 +219,43 @@ namespace K12.Club.Volunteer
 
         void BGW_Save_DoWork(object sender, DoWorkEventArgs e)
         {
+
             BGW_Save.ReportProgress(0, "志願分配作業...");
             //已有社團參與者略過或覆蓋
             DeleteList = new List<SCJoin>();
             InsertList1 = new List<SCJoin>();
             InsertList2 = new List<SCJoin>();
+
+
+            //增加退社相關作業(2015/9/14)
+            if (By_V.已有社團記錄時) //有社團記錄時,不進行退社(True覆蓋,False略過)
+            {
+                //進行已選學生的退社處理
+                foreach (DataGridViewRow row in dataGridViewX1.SelectedRows)
+                {
+                    if (row.DataBoundItem is 社團志願分配的Row)
+                    {
+                        社團志願分配的Row 班級 = (社團志願分配的Row)row.DataBoundItem;
+                        foreach (一名學生 一學生 in 班級._StudentDic.Values)
+                        {
+                            if (SCJLockDic.ContainsKey(一學生.student_id))
+                            {
+                                SCJoin scj_del = SCJLockDic[一學生.student_id];
+                                if (!scj_del.Lock) //不是鎖定的學生
+                                {
+                                    scj_del.Deleted = true;
+                                    scj_del.Save();
+
+                                    //設定社團人數
+                                    一個社團檢查 一社團 = CLUBCheckDic[scj_del.RefClubID];
+                                    SetClubGradeYearCount(一社團, 一學生, false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
 
             #region 社團參與依據
 
@@ -340,25 +392,58 @@ namespace K12.Club.Volunteer
                     continue;
                 一名學生 一學生 = StudentDic[StudentID];
 
-                if (一學生.grade_year == "1" || 一學生.grade_year == "7" || 一學生.grade_year == "10")
+
+                if (grade_yearList.Contains(一學生.grade_year))
                 {
-                    一社團._Now_ClubStudentCount++;
-                    一社團._Now_GradeYear1++;
-                    ran.AllocationSucceeds = true;
-                }
-                else if (一學生.grade_year == "2" || 一學生.grade_year == "8" || 一學生.grade_year == "11")
-                {
-                    一社團._Now_ClubStudentCount++;
-                    一社團._Now_GradeYear2++;
-                    ran.AllocationSucceeds = true;
-                }
-                else if (一學生.grade_year == "3" || 一學生.grade_year == "9" || 一學生.grade_year == "12")
-                {
-                    一社團._Now_ClubStudentCount++;
-                    一社團._Now_GradeYear3++;
                     ran.AllocationSucceeds = true;
                 }
 
+                SetClubGradeYearCount(一社團, 一學生, true);
+
+            }
+        }
+
+        private void SetClubGradeYearCount(一個社團檢查 一社團, 一名學生 一學生, bool IncreaseOrDecrease)
+        {
+
+            if (一學生.grade_year == "1" || 一學生.grade_year == "7" || 一學生.grade_year == "10")
+            {
+                if (IncreaseOrDecrease)
+                {
+                    一社團._Now_ClubStudentCount++;
+                    一社團._Now_GradeYear1++;
+                }
+                else
+                {
+                    一社團._Now_ClubStudentCount--;
+                    一社團._Now_GradeYear1--;
+                }
+            }
+            else if (一學生.grade_year == "2" || 一學生.grade_year == "8" || 一學生.grade_year == "11")
+            {
+                if (IncreaseOrDecrease)
+                {
+                    一社團._Now_ClubStudentCount++;
+                    一社團._Now_GradeYear2++;
+                }
+                else
+                {
+                    一社團._Now_ClubStudentCount--;
+                    一社團._Now_GradeYear2--;
+                }
+            }
+            else if (一學生.grade_year == "3" || 一學生.grade_year == "9" || 一學生.grade_year == "12")
+            {
+                if (IncreaseOrDecrease)
+                {
+                    一社團._Now_ClubStudentCount++;
+                    一社團._Now_GradeYear3++;
+                }
+                else
+                {
+                    一社團._Now_ClubStudentCount--;
+                    一社團._Now_GradeYear3--;
+                }
             }
         }
 

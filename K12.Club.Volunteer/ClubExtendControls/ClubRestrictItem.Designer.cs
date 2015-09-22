@@ -43,6 +43,7 @@
             this.Grade2Limit = new DevComponents.DotNetBar.LabelX();
             this.lbGrade1Limit = new DevComponents.DotNetBar.LabelX();
             this.listDepartment = new DevComponents.DotNetBar.Controls.ListViewEx();
+            this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.SuspendLayout();
             // 
             // cbGenderRestrict
@@ -221,10 +222,27 @@
             this.listDepartment.View = System.Windows.Forms.View.List;
             this.listDepartment.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listDepartment_ItemChecked);
             // 
+            // labelX1
+            // 
+            this.labelX1.AutoSize = true;
+            // 
+            // 
+            // 
+            this.labelX1.BackgroundStyle.Class = "";
+            this.labelX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.labelX1.Location = new System.Drawing.Point(51, 195);
+            this.labelX1.Name = "labelX1";
+            this.labelX1.Size = new System.Drawing.Size(412, 56);
+            this.labelX1.TabIndex = 12;
+            this.labelX1.Text = "說明　1.社團志願可分配名額為[扣除已存在社團內並且鎖定]之人數\r\n　　　2.志願分配時,若志願分配設定為覆蓋,將會把未鎖定之學生移除\r\n　　　3.人數限制,空白" +
+    "為不限制,要限制不可加入請輸入0";
+            // 
             // ClubRestrictItem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.labelX1);
             this.Controls.Add(this.listDepartment);
             this.Controls.Add(this.cbGenderRestrict);
             this.Controls.Add(this.tbGrade1Limit);
@@ -238,7 +256,7 @@
             this.Controls.Add(this.lbGrade3Limit);
             this.Controls.Add(this.lbLimit);
             this.Name = "ClubRestrictItem";
-            this.Size = new System.Drawing.Size(550, 200);
+            this.Size = new System.Drawing.Size(550, 260);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -261,6 +279,7 @@
         private DevComponents.DotNetBar.LabelX Grade2Limit;
         private DevComponents.DotNetBar.LabelX lbGrade1Limit;
         private DevComponents.DotNetBar.Controls.ListViewEx listDepartment;
+        private DevComponents.DotNetBar.LabelX labelX1;
 
     }
 }
