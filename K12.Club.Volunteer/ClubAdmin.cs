@@ -411,7 +411,7 @@ namespace K12.Club.Volunteer
                     {
                         count1 = ClubCountSCJoin[e.Key].二年級人數;
                     }
-                    
+
                     //人數上限
                     string count2 = AllClubDic[e.Key].Grade2Limit.HasValue ? AllClubDic[e.Key].Grade2Limit.Value.ToString() : "";
                     if (string.IsNullOrEmpty(count2))
@@ -671,15 +671,15 @@ namespace K12.Club.Volunteer
                 {
                     ClubCountSCJoin[ref_club_id].社團人數++;
 
-                    if (StudentDic[ref_student_id].GradeYear == "1")
+                    if (StudentDic[ref_student_id].GradeYear == "1" || StudentDic[ref_student_id].GradeYear == "4" || StudentDic[ref_student_id].GradeYear == "7" || StudentDic[ref_student_id].GradeYear == "10")
                     {
                         ClubCountSCJoin[ref_club_id].一年級人數++;
                     }
-                    else if (StudentDic[ref_student_id].GradeYear == "2")
+                    else if (StudentDic[ref_student_id].GradeYear == "2" || StudentDic[ref_student_id].GradeYear == "5" || StudentDic[ref_student_id].GradeYear == "8" || StudentDic[ref_student_id].GradeYear == "11")
                     {
                         ClubCountSCJoin[ref_club_id].二年級人數++;
                     }
-                    else if (StudentDic[ref_student_id].GradeYear == "3")
+                    else if (StudentDic[ref_student_id].GradeYear == "3" || StudentDic[ref_student_id].GradeYear == "6" || StudentDic[ref_student_id].GradeYear == "9" || StudentDic[ref_student_id].GradeYear == "12")
                     {
                         ClubCountSCJoin[ref_club_id].三年級人數++;
                     }

@@ -57,9 +57,9 @@
             this.comboItem3,
             this.comboItem1,
             this.comboItem2});
-            this.cbGenderRestrict.Location = new System.Drawing.Point(93, 18);
+            this.cbGenderRestrict.Location = new System.Drawing.Point(104, 18);
             this.cbGenderRestrict.Name = "cbGenderRestrict";
-            this.cbGenderRestrict.Size = new System.Drawing.Size(104, 25);
+            this.cbGenderRestrict.Size = new System.Drawing.Size(156, 25);
             this.cbGenderRestrict.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.cbGenderRestrict.TabIndex = 1;
             // 
@@ -79,11 +79,11 @@
             // 
             this.lbGenderRestrict.BackgroundStyle.Class = "";
             this.lbGenderRestrict.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.lbGenderRestrict.Location = new System.Drawing.Point(26, 20);
+            this.lbGenderRestrict.Location = new System.Drawing.Point(60, 20);
             this.lbGenderRestrict.Name = "lbGenderRestrict";
-            this.lbGenderRestrict.Size = new System.Drawing.Size(57, 21);
+            this.lbGenderRestrict.Size = new System.Drawing.Size(34, 21);
             this.lbGenderRestrict.TabIndex = 0;
-            this.lbGenderRestrict.Text = "性 　  別";
+            this.lbGenderRestrict.Text = "性別";
             // 
             // lbDepartment
             // 
@@ -93,7 +93,7 @@
             // 
             this.lbDepartment.BackgroundStyle.Class = "";
             this.lbDepartment.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.lbDepartment.Location = new System.Drawing.Point(200, 20);
+            this.lbDepartment.Location = new System.Drawing.Point(276, 20);
             this.lbDepartment.Name = "lbDepartment";
             this.lbDepartment.Size = new System.Drawing.Size(74, 21);
             this.lbDepartment.TabIndex = 10;
@@ -106,9 +106,9 @@
             // 
             this.tbLimit.Border.Class = "TextBoxBorder";
             this.tbLimit.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.tbLimit.Location = new System.Drawing.Point(93, 157);
+            this.tbLimit.Location = new System.Drawing.Point(102, 154);
             this.tbLimit.Name = "tbLimit";
-            this.tbLimit.Size = new System.Drawing.Size(167, 25);
+            this.tbLimit.Size = new System.Drawing.Size(158, 25);
             this.tbLimit.TabIndex = 9;
             // 
             // tbGrade3Limit
@@ -118,9 +118,9 @@
             // 
             this.tbGrade3Limit.Border.Class = "TextBoxBorder";
             this.tbGrade3Limit.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.tbGrade3Limit.Location = new System.Drawing.Point(94, 122);
+            this.tbGrade3Limit.Location = new System.Drawing.Point(103, 120);
             this.tbGrade3Limit.Name = "tbGrade3Limit";
-            this.tbGrade3Limit.Size = new System.Drawing.Size(166, 25);
+            this.tbGrade3Limit.Size = new System.Drawing.Size(157, 25);
             this.tbGrade3Limit.TabIndex = 7;
             this.tbGrade3Limit.TextChanged += new System.EventHandler(this.tbGrade3Limit_TextChanged);
             // 
@@ -131,9 +131,9 @@
             // 
             this.tbGrade2Limit.Border.Class = "TextBoxBorder";
             this.tbGrade2Limit.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.tbGrade2Limit.Location = new System.Drawing.Point(94, 88);
+            this.tbGrade2Limit.Location = new System.Drawing.Point(103, 86);
             this.tbGrade2Limit.Name = "tbGrade2Limit";
-            this.tbGrade2Limit.Size = new System.Drawing.Size(166, 25);
+            this.tbGrade2Limit.Size = new System.Drawing.Size(157, 25);
             this.tbGrade2Limit.TabIndex = 5;
             this.tbGrade2Limit.TextChanged += new System.EventHandler(this.tbGrade2Limit_TextChanged);
             // 
@@ -144,9 +144,9 @@
             // 
             this.tbGrade1Limit.Border.Class = "TextBoxBorder";
             this.tbGrade1Limit.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.tbGrade1Limit.Location = new System.Drawing.Point(94, 53);
+            this.tbGrade1Limit.Location = new System.Drawing.Point(103, 52);
             this.tbGrade1Limit.Name = "tbGrade1Limit";
-            this.tbGrade1Limit.Size = new System.Drawing.Size(166, 25);
+            this.tbGrade1Limit.Size = new System.Drawing.Size(157, 25);
             this.tbGrade1Limit.TabIndex = 3;
             this.tbGrade1Limit.TextChanged += new System.EventHandler(this.tbGrade1Limit_TextChanged);
             // 
@@ -158,7 +158,7 @@
             // 
             this.lbLimit.BackgroundStyle.Class = "";
             this.lbLimit.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.lbLimit.Location = new System.Drawing.Point(24, 159);
+            this.lbLimit.Location = new System.Drawing.Point(34, 154);
             this.lbLimit.Name = "lbLimit";
             this.lbLimit.Size = new System.Drawing.Size(60, 21);
             this.lbLimit.TabIndex = 8;
@@ -172,11 +172,11 @@
             // 
             this.lbGrade3Limit.BackgroundStyle.Class = "";
             this.lbGrade3Limit.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.lbGrade3Limit.Location = new System.Drawing.Point(24, 124);
+            this.lbGrade3Limit.Location = new System.Drawing.Point(20, 122);
             this.lbGrade3Limit.Name = "lbGrade3Limit";
-            this.lbGrade3Limit.Size = new System.Drawing.Size(60, 21);
+            this.lbGrade3Limit.Size = new System.Drawing.Size(74, 21);
             this.lbGrade3Limit.TabIndex = 6;
-            this.lbGrade3Limit.Text = "三  年  級";
+            this.lbGrade3Limit.Text = "三年級限制";
             // 
             // Grade2Limit
             // 
@@ -186,11 +186,11 @@
             // 
             this.Grade2Limit.BackgroundStyle.Class = "";
             this.Grade2Limit.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.Grade2Limit.Location = new System.Drawing.Point(24, 90);
+            this.Grade2Limit.Location = new System.Drawing.Point(20, 88);
             this.Grade2Limit.Name = "Grade2Limit";
-            this.Grade2Limit.Size = new System.Drawing.Size(60, 21);
+            this.Grade2Limit.Size = new System.Drawing.Size(74, 21);
             this.Grade2Limit.TabIndex = 4;
-            this.Grade2Limit.Text = "二  年  級";
+            this.Grade2Limit.Text = "二年級限制";
             // 
             // lbGrade1Limit
             // 
@@ -200,11 +200,11 @@
             // 
             this.lbGrade1Limit.BackgroundStyle.Class = "";
             this.lbGrade1Limit.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.lbGrade1Limit.Location = new System.Drawing.Point(24, 55);
+            this.lbGrade1Limit.Location = new System.Drawing.Point(20, 54);
             this.lbGrade1Limit.Name = "lbGrade1Limit";
-            this.lbGrade1Limit.Size = new System.Drawing.Size(60, 21);
+            this.lbGrade1Limit.Size = new System.Drawing.Size(74, 21);
             this.lbGrade1Limit.TabIndex = 2;
-            this.lbGrade1Limit.Text = "一  年  級";
+            this.lbGrade1Limit.Text = "一年級限制";
             // 
             // listDepartment
             // 
@@ -214,9 +214,9 @@
             this.listDepartment.Border.Class = "ListViewBorder";
             this.listDepartment.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.listDepartment.CheckBoxes = true;
-            this.listDepartment.Location = new System.Drawing.Point(276, 20);
+            this.listDepartment.Location = new System.Drawing.Point(276, 46);
             this.listDepartment.Name = "listDepartment";
-            this.listDepartment.Size = new System.Drawing.Size(251, 162);
+            this.listDepartment.Size = new System.Drawing.Size(251, 136);
             this.listDepartment.TabIndex = 11;
             this.listDepartment.UseCompatibleStateImageBehavior = false;
             this.listDepartment.View = System.Windows.Forms.View.List;
@@ -233,10 +233,11 @@
             this.labelX1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.labelX1.Location = new System.Drawing.Point(51, 195);
             this.labelX1.Name = "labelX1";
-            this.labelX1.Size = new System.Drawing.Size(412, 56);
+            this.labelX1.Size = new System.Drawing.Size(466, 91);
             this.labelX1.TabIndex = 12;
-            this.labelX1.Text = "說明　1.社團志願可分配名額為[扣除已存在社團內並且鎖定]之人數\r\n　　　2.志願分配時,若志願分配設定為覆蓋,將會把未鎖定之學生移除\r\n　　　3.人數限制,空白" +
-    "為不限制,要限制不可加入請輸入0";
+            this.labelX1.Text = "說明　1.社團志願可分配名額為[扣除已存在社團內並且鎖定]之人數\r\n　　　2.志願分配時,選社志願設定為覆蓋,將會把未鎖定之學生移除後進行分配\r\n　　　3.人數限" +
+    "制:不可加入請輸入0(空白為不限制)\r\n　　　4.年級限制依學校使用之年級而不同為區段性:\r\n　　　   您可以是 1,2,3 / 4,5,6 / 7,8,9 " +
+    "/ 10,11,12";
             // 
             // ClubRestrictItem
             // 
@@ -256,7 +257,7 @@
             this.Controls.Add(this.lbGrade3Limit);
             this.Controls.Add(this.lbLimit);
             this.Name = "ClubRestrictItem";
-            this.Size = new System.Drawing.Size(550, 260);
+            this.Size = new System.Drawing.Size(550, 295);
             this.ResumeLayout(false);
             this.PerformLayout();
 
