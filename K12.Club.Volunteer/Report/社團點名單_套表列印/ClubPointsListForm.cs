@@ -134,6 +134,7 @@ namespace K12.Club.Volunteer
 
             table.Columns.Add("上課地點");
             table.Columns.Add("社團類型");
+            table.Columns.Add("社團代碼"); //2016/9/22 - 新增
             table.Columns.Add("指導老師1");
             table.Columns.Add("指導老師2");
             table.Columns.Add("指導老師3");
@@ -186,6 +187,8 @@ namespace K12.Club.Volunteer
 
                 row["上課地點"] = cr.Location;
                 row["社團類型"] = cr.ClubCategory;
+                row["社團代碼"] = cr.ClubNumber;
+
                 if (crM.TeacherDic.ContainsKey(cr.RefTeacherID))
                 {
                     row["指導老師1"] = crM.TeacherDic[cr.RefTeacherID].Name;

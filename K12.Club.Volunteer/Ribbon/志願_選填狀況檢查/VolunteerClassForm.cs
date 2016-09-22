@@ -144,7 +144,7 @@ namespace K12.Club.Volunteer
                 {
                     if (StudentDic.ContainsKey(stud.RefStudentID))
                     {
-                        一個社團檢查 c =CLUBCheckDic[stud.RefClubID];
+                        一個社團檢查 c = CLUBCheckDic[stud.RefClubID];
                         一名學生 s = StudentDic[stud.RefStudentID];
                         SetClubGradeYearCount(c, s, true);
                     }
@@ -326,12 +326,13 @@ namespace K12.Club.Volunteer
 
             #endregion
 
-            if (!By_V.已有社團記錄時) //True為覆蓋
-            {
-                //要略過的話
-                //要先進行資料的檢查            
-                SetCount(RunList);
-            }
+            //2016/9/7 - 略過功能不需要再一次進行人數統計
+            //if (!By_V.已有社團記錄時) //True為覆蓋
+            //{
+            //    //要略過的話
+            //    //要先進行資料的檢查            
+            //    SetCount(RunList);
+            //}
 
             #region 開始分配學生社團狀態(相關狀態與學生都應該已處理)
 
@@ -369,39 +370,33 @@ namespace K12.Club.Volunteer
             BGW_Save.ReportProgress(100, "選社分配完成!!");
         }
 
-        private void SetCount(List<學生選社亂數檔> RunList)
-        {
-            foreach (學生選社亂數檔 ran in RunList)
-            {
-                //社團選社資料
-                VolunteerRecord vr = ran._record;
-                string StudentID = vr.RefStudentID;
-
-                //是否有社團記錄
-                if (!SCJLockDic.ContainsKey(StudentID))
-                    continue;
-                SCJoin scj = SCJLockDic[StudentID];
-
-                //社團記錄是否有該社團
-                if (!CLUBCheckDic.ContainsKey(scj.RefClubID))
-                    continue;
-                一個社團檢查 一社團 = CLUBCheckDic[scj.RefClubID];
-
-                //是否為學生
-                if (!StudentDic.ContainsKey(StudentID))
-                    continue;
-                一名學生 一學生 = StudentDic[StudentID];
-
-
-                if (grade_yearList.Contains(一學生.grade_year))
-                {
-                    ran.AllocationSucceeds = true;
-                }
-
-                SetClubGradeYearCount(一社團, 一學生, true);
-
-            }
-        }
+        //2016/9/7 - 略過功能不需要再一次進行人數統計
+        //private void SetCount(List<學生選社亂數檔> RunList)
+        //{
+        //    foreach (學生選社亂數檔 ran in RunList)
+        //    {
+        //        //社團選社資料
+        //        VolunteerRecord vr = ran._record;
+        //        string StudentID = vr.RefStudentID;
+        //        //是否有社團記錄
+        //        if (!SCJLockDic.ContainsKey(StudentID))
+        //            continue;
+        //        SCJoin scj = SCJLockDic[StudentID];
+        //        //社團記錄是否有該社團
+        //        if (!CLUBCheckDic.ContainsKey(scj.RefClubID))
+        //            continue;
+        //        一個社團檢查 一社團 = CLUBCheckDic[scj.RefClubID];
+        //        //是否為學生
+        //        if (!StudentDic.ContainsKey(StudentID))
+        //            continue;
+        //        一名學生 一學生 = StudentDic[StudentID];
+        //        if (grade_yearList.Contains(一學生.grade_year))
+        //        {
+        //            ran.AllocationSucceeds = true;
+        //        }
+        //        SetClubGradeYearCount(一社團, 一學生, true);
+        //    }
+        //}
 
         private void SetClubGradeYearCount(一個社團檢查 一社團, 一名學生 一學生, bool IncreaseOrDecrease)
         {
@@ -620,7 +615,7 @@ namespace K12.Club.Volunteer
 
                                 if (一社團.男女限制 == 一學生.gender || 一社團.男女限制 == GetVolunteerData.男女.不限制)
                                 {
-                                    if (一學生.grade_year == "1" || 一學生.grade_year == "7")
+                                    if (一學生.grade_year == "1" || 一學生.grade_year == "7" || 一學生.grade_year == "10")
                                     {
                                         if (一社團.一年級未滿)
                                         {
@@ -634,7 +629,7 @@ namespace K12.Club.Volunteer
                                             return true;
                                         }
                                     }
-                                    else if (一學生.grade_year == "2" || 一學生.grade_year == "8")
+                                    else if (一學生.grade_year == "2" || 一學生.grade_year == "8" || 一學生.grade_year == "11")
                                     {
                                         if (一社團.二年級未滿)
                                         {
@@ -648,7 +643,7 @@ namespace K12.Club.Volunteer
                                             return true;
                                         }
                                     }
-                                    else if (一學生.grade_year == "3" || 一學生.grade_year == "9")
+                                    else if (一學生.grade_year == "3" || 一學生.grade_year == "9" || 一學生.grade_year == "12")
                                     {
                                         if (一社團.三年級未滿)
                                         {
@@ -677,21 +672,21 @@ namespace K12.Club.Volunteer
                             {
                                 一名學生 一學生 = StudentDic[StudentID];
 
-                                if (一學生.grade_year == "1" || 一學生.grade_year == "7")
+                                if (一學生.grade_year == "1" || 一學生.grade_year == "7" || 一學生.grade_year == "10")
                                 {
                                     一社團._Now_ClubStudentCount++;
                                     一社團._Now_GradeYear1++;
                                     return true;
 
                                 }
-                                else if (一學生.grade_year == "2" || 一學生.grade_year == "8")
+                                else if (一學生.grade_year == "2" || 一學生.grade_year == "8" || 一學生.grade_year == "11")
                                 {
                                     一社團._Now_ClubStudentCount++;
                                     一社團._Now_GradeYear2++;
                                     return true;
 
                                 }
-                                else if (一學生.grade_year == "3" || 一學生.grade_year == "9")
+                                else if (一學生.grade_year == "3" || 一學生.grade_year == "9" || 一學生.grade_year == "12")
                                 {
                                     一社團._Now_ClubStudentCount++;
                                     一社團._Now_GradeYear3++;
@@ -715,21 +710,21 @@ namespace K12.Club.Volunteer
                         {
                             一名學生 一學生 = StudentDic[StudentID];
 
-                            if (一學生.grade_year == "1" || 一學生.grade_year == "7")
+                            if (一學生.grade_year == "1" || 一學生.grade_year == "7" || 一學生.grade_year == "10")
                             {
                                 一社團._Now_ClubStudentCount++;
                                 一社團._Now_GradeYear1++;
                                 return true;
 
                             }
-                            else if (一學生.grade_year == "2" || 一學生.grade_year == "8")
+                            else if (一學生.grade_year == "2" || 一學生.grade_year == "8" || 一學生.grade_year == "11")
                             {
                                 一社團._Now_ClubStudentCount++;
                                 一社團._Now_GradeYear2++;
                                 return true;
 
                             }
-                            else if (一學生.grade_year == "3" || 一學生.grade_year == "9")
+                            else if (一學生.grade_year == "3" || 一學生.grade_year == "9" || 一學生.grade_year == "12")
                             {
                                 一社團._Now_ClubStudentCount++;
                                 一社團._Now_GradeYear3++;
