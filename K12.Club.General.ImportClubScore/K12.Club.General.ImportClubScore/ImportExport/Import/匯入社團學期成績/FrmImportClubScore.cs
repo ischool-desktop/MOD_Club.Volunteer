@@ -12,13 +12,6 @@ namespace K12.Club.General.ImportClubScore.ImportExport.Import.匯入社團學�
         // 設定檔
         private ImportOption _Option;
 
-        private LogHelper _LogHelper;
-
-        // 新增
-        private List<DAO.ResultScoreRecord> _InsertRecList;
-        // 更新
-        private List<DAO.ResultScoreRecord> _UpdateRecList;
-
         public override ImportAction GetSupportActions()
         {
             //新增或更新
@@ -33,20 +26,21 @@ namespace K12.Club.General.ImportClubScore.ImportExport.Import.匯入社團學�
         public override void Prepare(ImportOption Option)
         {
             _Option = Option;
-            _InsertRecList = new List<DAO.ResultScoreRecord>();
-            _UpdateRecList = new List<DAO.ResultScoreRecord>();
-            _LogHelper = new LogHelper();
         }
 
         public override string Import(List<Campus.DocumentValidator.IRowStream> Rows)
         {
+            LogHelper _LogHelper = new LogHelper();
+            // 新增
+            List<DAO.ResultScoreRecord> _InsertRecList = new List<DAO.ResultScoreRecord>();
+            // 更新
+            List<DAO.ResultScoreRecord> _UpdateRecList = new List<DAO.ResultScoreRecord>();
+
             if (_Option.Action == ImportAction.InsertOrUpdate)
             {
-                _InsertRecList.Clear();
-                _UpdateRecList.Clear();
 
                 // Key: 系統ID, Value: 學號
-                Dictionary<string, string> studentIdDic = new Dictionary<string,string>();
+                Dictionary<string, string> studentIdDic = new Dictionary<string, string>();
 
                 // 取得學生的系統ID
                 foreach (IRowStream row in Rows)
@@ -58,7 +52,7 @@ namespace K12.Club.General.ImportClubScore.ImportExport.Import.匯入社團學�
                     if (Global._AllStudentNumberIDTemp.ContainsKey(studentNumber))
                     {
                         string studentId = Global._AllStudentNumberIDTemp[studentNumber];
-                    
+
                         if (!studentIdDic.ContainsKey(studentId))
                             studentIdDic.Add(studentId, studentNumber);
                     }
@@ -69,7 +63,7 @@ namespace K12.Club.General.ImportClubScore.ImportExport.Import.匯入社團學�
 
                 int totalCount = 0;
                 #region 處理每一筆資料是新增或更新
-                
+
                 // 判斷每一筆資料是要新增還是更新
                 foreach (IRowStream row in Rows)
                 {
@@ -84,7 +78,10 @@ namespace K12.Club.General.ImportClubScore.ImportExport.Import.匯入社團學�
                     int schoolYear = Utility.GetIRowValueInt(row, Global._ColScholYear);
                     int semester = Utility.GetIRowValueInt(row, Global._ColSemester);
                     string clubName = Utility.GetIRowValueString(row, Global._ColClubName);
+
+                    //2017/1/20 - 如為空白
                     decimal? clubScore = Utility.GetIRowValueDecimal(row, Global._ColClubScore);
+
                     string cadreName = Utility.GetIRowValueString(row, Global._ColCadreName);
 
                     // 透過學號換成學生ID
@@ -141,7 +138,7 @@ namespace K12.Club.General.ImportClubScore.ImportExport.Import.匯入社團學�
                         // 社團學期成績
                         if (_Option.SelectedFields.Contains(Global._ColClubScore))
                             rec.ResultScore = clubScore;
-                    
+
                         // 社團幹部
                         if (_Option.SelectedFields.Contains(Global._ColCadreName))
                             rec.CadreName = cadreName;
@@ -168,7 +165,7 @@ namespace K12.Club.General.ImportClubScore.ImportExport.Import.匯入社團學�
                     #region 處理Log
                     StringBuilder sb = new StringBuilder();
                     sb.AppendLine("新增匯入社團學期成績：");
-                    foreach ( DAO.ResultScoreRecord rec in _InsertRecList)
+                    foreach (DAO.ResultScoreRecord rec in _InsertRecList)
                     {
                         string studentNumber = "";
                         if (studentIdDic.ContainsKey(rec.RefStudentID))

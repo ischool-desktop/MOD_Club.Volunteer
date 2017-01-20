@@ -26,13 +26,14 @@
 		  <Validate AutoCorrect="False" Description="「社團名稱」不允許空白。" ErrorType="Error" Validator="不可空白" When=""/>
     </Field>
     <Field Required="False" Name="學期成績" Description="請輸入數字">
-		  <Validate AutoCorrect="False" Description="「學期成績」不允許空白。" ErrorType="Error" Validator="不可空白" When=""/>
-		  <Validate AutoCorrect="False" Description="「學期成績」必須是數字。" ErrorType="Error" Validator="Integer極限" When=""/>
+      <Validate AutoCorrect="False" Description="「學期成績」空白可匯入，若有值則必須是數字。" ErrorType="Warning" Validator="不可空白" When=""/>
+      <Validate AutoCorrect="False" Description="「學期成績」必須是數字。" ErrorType="Error" Validator="可以是空白也驗證是數字" When=""/>
     </Field>
     <Field Required="False" Name="幹部名稱" EmptyAlsoValidate="False" Description="" />
   </FieldList>
   <ValidatorList>
     <FieldValidator Name="學生是否存在系統" Type="K12CLUBGENERALCLUBSCORECHECKSTUDENTNUMBER"/>
+    <FieldValidator Name="可以是空白也驗證是數字" Type="IMPORTCLUBSCOREISNEW"/>
     <FieldValidator Name="不可空白" Type="STRINGLENGTH">
 		  <MinLength>1</MinLength>
     </FieldValidator>

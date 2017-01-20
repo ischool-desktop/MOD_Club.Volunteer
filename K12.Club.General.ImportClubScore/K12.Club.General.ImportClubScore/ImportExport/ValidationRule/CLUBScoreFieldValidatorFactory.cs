@@ -17,6 +17,8 @@ namespace K12.Club.General.ImportClubScore.ImportExport.ValidationRule
             {
                 case "K12CLUBGENERALCLUBSCORECHECKSTUDENTNUMBER":
                     return new StudentInischoolCheck();
+                case "IMPORTCLUBSCOREISNEW":
+                    return new NumberIsNewScoreCheck();
                 default:
                     return null;
             }

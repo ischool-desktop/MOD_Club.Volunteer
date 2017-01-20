@@ -113,6 +113,7 @@
     <Compile Include="Global.cs" />
     <Compile Include="ImportExport\Import\匯入社團學期成績\FrmImportClubScore.cs" />
     <Compile Include="ImportExport\ValidationRule\CLUBScoreFieldValidatorFactory.cs" />
+    <Compile Include="ImportExport\ValidationRule\FieldValidator\NumberIsNewScoreCheck.cs" />
     <Compile Include="ImportExport\ValidationRule\FieldValidator\StudentInischoolCheck.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="Permissions.cs" />
@@ -132,7 +133,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ImportCLUBScoreRule.xml" />
+    <None Include="Resources\ImportCLUBScoreRule.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Library\Aspose.Cells.dll" />
