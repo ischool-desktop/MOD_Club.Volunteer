@@ -307,7 +307,26 @@ namespace K12.Club.Volunteer
                 if (e.Error == null)
                 {
                     dataGridViewX1.AutoGenerateColumns = false;
+
+                    GetSortString(RowList);
+
+                    //StringBuilder sb = new StringBuilder();
+                    //foreach (SCJoinRow abc in RowList)
+                    //{
+                    //    sb.AppendLine(abc.SortString);
+                    //}
+                    //System.Diagnostics.Debug.Print(sb.ToString());
+
                     RowList.Sort(SortSCJ);
+
+                    //StringBuilder sb1 = new StringBuilder();
+                    //foreach (SCJoinRow abc in RowList)
+                    //{
+                    //    sb1.AppendLine(abc.SortString);
+                    //}
+                    //System.Diagnostics.Debug.Print(sb.ToString());
+
+
                     dataGridViewX1.DataSource = RowList;
 
                     //Log
@@ -364,6 +383,59 @@ namespace K12.Club.Volunteer
                     MsgBox.Show("發生錯誤:\n" + e.Error.Message);
                 }
             }
+        }
+
+        private void GetSortString(List<SCJoinRow> RowList)
+        {
+            foreach (SCJoinRow a in RowList)
+            {
+                string ClassYear = ""; //年級
+                string ClassIndex = ""; //班級序號
+                string ClassName = ""; //班級名稱
+                string StudentSeatNo = ""; //學生座號
+                string StudentName = ""; //學生姓名
+
+                if (a.ClassName != "")
+                {
+                    ClassYear = a.ClassGradeYear.PadLeft(10, '0');
+
+                    if (a.ClassIndex != "")
+                        ClassIndex = a.ClassIndex.PadLeft(10, '0');
+                    else
+                        ClassIndex = a.ClassIndex.PadLeft(10, '9');
+
+                    ClassName = a.ClassName.PadLeft(10, '0');
+                }
+                else
+                {
+                    ClassYear = a.ClassGradeYear.PadLeft(10, '9');
+                    ClassIndex = a.ClassIndex.PadLeft(10, '9');
+                    ClassName = a.ClassName.PadLeft(10, '9');
+                }
+
+                if (a.SeatNo != "")
+                {
+                    StudentSeatNo = a.SeatNo.PadLeft(10, '0');
+                }
+                else
+                {
+                    StudentSeatNo = a.SeatNo.PadLeft(10, '9');
+                }
+
+                StudentName = a.StudentName.PadLeft(10, '0');
+
+
+                a.SortString = ClassYear + ClassIndex + ClassName + StudentSeatNo + StudentName;
+            }
+        }
+
+        /// <summary>
+        /// 排序資料
+        /// 年級->班級序號->班級名稱->座號->姓名
+        /// </summary>
+        private int SortSCJ(SCJoinRow a, SCJoinRow b)
+        {
+            return a.SortString.CompareTo(b.SortString);
         }
 
         /// <summary>
@@ -595,29 +667,6 @@ namespace K12.Club.Volunteer
             {
                 BGW_FormLoad.RunWorkerAsync();
             }
-        }
-
-        /// <summary>
-        /// 排序資料
-        /// 社團編號 ->社團名稱 ->班級名稱 ->座號 ->學生姓名
-        /// </summary>
-        private int SortSCJ(SCJoinRow a, SCJoinRow b)
-        {
-            string clubNameA = a.club.ClubNumber.PadLeft(3, '0');
-            clubNameA += a.ClubName.PadLeft(10, '0');
-            clubNameA += a.ClassIndex.PadLeft(3, '0');
-            clubNameA += a.ClassName.PadLeft(5, '0');
-            clubNameA += a.SeatNo.PadLeft(3, '0');
-            clubNameA += a.StudentName.PadLeft(10, '0');
-
-            string clubNameB = b.club.ClubNumber.PadLeft(3, '0');
-            clubNameB += b.ClubName.PadLeft(10, '0');
-            clubNameB += b.ClassIndex.PadLeft(3, '0');
-            clubNameB += b.ClassName.PadLeft(5, '0');
-            clubNameB += b.SeatNo.PadLeft(3, '0');
-            clubNameB += b.StudentName.PadLeft(10, '0');
-
-            return clubNameA.CompareTo(clubNameB);
         }
 
         /// <summary>

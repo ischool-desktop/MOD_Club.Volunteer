@@ -651,7 +651,9 @@
     <None Include="Resources\admissions_ok_64.png" />
     <None Include="Resources\group_up_64.png" />
     <None Include="Resources\ImportCLUBDataValRule.xml" />
-    <None Include="Resources\ImportVolunteerRecordValRule.xml" />
+    <None Include="Resources\ImportVolunteerRecordValRule.xml">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="這個社團是志願序社團.txt" />
   </ItemGroup>
   <ItemGroup>

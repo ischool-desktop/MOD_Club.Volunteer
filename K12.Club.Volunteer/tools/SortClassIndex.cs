@@ -170,7 +170,22 @@ namespace K12.Club.Volunteer
                     list.Add(obj);
                 }
             }
+
+            //StringBuilder sb = new StringBuilder();
+            //foreach (StudentSortObj_K12Data abc in list)
+            //{
+            //    sb.AppendLine(abc._SortString);
+            //}
+            //System.Diagnostics.Debug.Print(sb.ToString());
+
             list.Sort(SortK12Data_StudentRecord);
+
+            //StringBuilder sb1 = new StringBuilder();
+            //foreach (StudentSortObj_K12Data abc in list)
+            //{
+            //    sb1.AppendLine(abc._SortString);
+            //}
+            //System.Diagnostics.Debug.Print(sb1.ToString());
 
             return list.Select(x => x._StudentRecord).ToList();
 
