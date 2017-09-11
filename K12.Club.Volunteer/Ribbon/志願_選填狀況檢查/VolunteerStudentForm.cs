@@ -94,10 +94,11 @@ namespace K12.Club.Volunteer
                     {
                         DataGridViewRow row = new DataGridViewRow();
                         row.CreateCells(dataGridViewX1);
-                        row.Cells[0].Value = each.seat_no.HasValue ? each.seat_no.Value.ToString() : ""; //座號
-                        row.Cells[1].Value = each.student_name; //姓名
-                        row.Cells[2].Value = each.gender; //姓名
-
+                        row.Cells[colStudentNumber.Index].Value = each.student_number; //學號
+                        row.Cells[ColSeatNo.Index].Value = each.seat_no.HasValue ? each.seat_no.Value.ToString() : ""; //座號
+                        row.Cells[ColStudentName.Index].Value = each.student_name; //姓名
+                        row.Cells[colGender.Index].Value = each.gender; //性別
+           
 
                         if (_VolRow._Volunteer.ContainsKey(each.student_id))
                         {
@@ -126,8 +127,8 @@ namespace K12.Club.Volunteer
                                             {
                                                 CLUBRecord cr = ClubDic[clubID];
                                                 //+3是因為由第 3 Column起始
-                                                row.Cells[ClubIndex + 2].Value = cr.ClubName;
-                                                row.Cells[ClubIndex + 2].ReadOnly = true;
+                                                row.Cells[ClubIndex + colGender.Index].Value = cr.ClubName;
+                                                row.Cells[ClubIndex + colGender.Index].ReadOnly = true;
                                             }
                                         }
                                     }
@@ -144,7 +145,7 @@ namespace K12.Club.Volunteer
                             if (_VolRow._ClubDic.ContainsKey(scj.RefClubID))
                             {
                                 CLUBRecord club = _VolRow._ClubDic[scj.RefClubID];
-                                row.Cells[1].Value += "(" + club.ClubName + ")";
+                                row.Cells[ColStudentName.Index].Value += "(" + club.ClubName + ")";
 
                                 if (scj.Lock)
                                 {

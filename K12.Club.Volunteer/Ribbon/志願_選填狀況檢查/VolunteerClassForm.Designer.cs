@@ -62,7 +62,7 @@
             this.btnRunStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRunStart.BackColor = System.Drawing.Color.Transparent;
             this.btnRunStart.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnRunStart.Location = new System.Drawing.Point(477, 433);
+            this.btnRunStart.Location = new System.Drawing.Point(488, 433);
             this.btnRunStart.Name = "btnRunStart";
             this.btnRunStart.Size = new System.Drawing.Size(143, 25);
             this.btnRunStart.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -77,7 +77,7 @@
             this.btnExit.AutoSize = true;
             this.btnExit.BackColor = System.Drawing.Color.Transparent;
             this.btnExit.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnExit.Location = new System.Drawing.Point(626, 433);
+            this.btnExit.Location = new System.Drawing.Point(637, 433);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 25);
             this.btnExit.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -117,7 +117,7 @@
             this.dataGridViewX1.Name = "dataGridViewX1";
             this.dataGridViewX1.RowTemplate.Height = 24;
             this.dataGridViewX1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewX1.Size = new System.Drawing.Size(691, 403);
+            this.dataGridViewX1.Size = new System.Drawing.Size(702, 403);
             this.dataGridViewX1.TabIndex = 2;
             this.dataGridViewX1.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridViewX1_CellMouseDoubleClick);
             this.dataGridViewX1.SelectionChanged += new System.EventHandler(this.dataGridViewX1_SelectionChanged);
@@ -181,12 +181,12 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.檢視學生選填明細ToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(167, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 26);
             // 
             // 檢視學生選填明細ToolStripMenuItem
             // 
             this.檢視學生選填明細ToolStripMenuItem.Name = "檢視學生選填明細ToolStripMenuItem";
-            this.檢視學生選填明細ToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.檢視學生選填明細ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.檢視學生選填明細ToolStripMenuItem.Text = "檢視學生選填明細";
             this.檢視學生選填明細ToolStripMenuItem.Click += new System.EventHandler(this.檢視學生選填明細ToolStripMenuItem_Click);
             // 
@@ -276,7 +276,7 @@
             // 
             this.labelX2.BackgroundStyle.Class = "";
             this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX2.Location = new System.Drawing.Point(372, 435);
+            this.labelX2.Location = new System.Drawing.Point(383, 435);
             this.labelX2.Name = "labelX2";
             this.labelX2.Size = new System.Drawing.Size(82, 21);
             this.labelX2.TabIndex = 4;
@@ -286,12 +286,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(713, 465);
+            this.ClientSize = new System.Drawing.Size(724, 465);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.labelX1);
             this.Controls.Add(this.dataGridViewX1);
             this.Controls.Add(this.btnRunStart);
+            this.DoubleBuffered = true;
             this.MaximizeBox = true;
             this.Name = "VolunteerClassForm";
             this.Text = "志願分配作業";

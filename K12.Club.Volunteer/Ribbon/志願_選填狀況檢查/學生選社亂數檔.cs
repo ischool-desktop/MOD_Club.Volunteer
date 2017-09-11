@@ -13,6 +13,11 @@ namespace K12.Club.Volunteer
         public int _Number { get; set; }
 
         /// <summary>
+        /// 序號
+        /// </summary>
+        public int _Index { get; set; }
+
+        /// <summary>
         /// 選社記錄
         /// </summary>
         public VolunteerRecord _record { get; set; }
