@@ -351,6 +351,13 @@ namespace K12.Club.Volunteer
 
             #region 開始分配學生社團狀態(相關狀態與學生都應該已處理)
 
+            if (By_V.已有社團記錄時)
+                sb_Log.AppendLine("選社設定：覆蓋");
+            else
+                sb_Log.AppendLine("選社設定：略過");
+
+            sb_Log.AppendLine("每名學生志願數：" + By_V.學生選填志願數.ToString());
+
             //取志願
             BGW_Save.ReportProgress(45, "志願選填作業...");
             for (int x = 1; x <= By_V.學生選填志願數; x++)
@@ -359,7 +366,7 @@ namespace K12.Club.Volunteer
                 BGW_Save.ReportProgress(65, string.Format("志願選填作業...{0}", x));
 
                 sb_Log.AppendLine("");
-                sb_Log.AppendLine(string.Format("═══進行第「{0}」志願分配═══", x.ToString()));
+                sb_Log.AppendLine(string.Format("═══開始進行第「{0}」志願分配═══", x.ToString()));
                 sb_Log.AppendLine("");
                 Judge(RunList, x);
 
@@ -508,6 +515,7 @@ namespace K12.Club.Volunteer
             //每一個社團
             foreach (XmlElement each in xml.SelectNodes("Club"))
             {
+                #region 每一個社團
                 int index = 0;
                 int.TryParse(each.GetAttribute("Index"), out index);
                 //當進行第一輪志願分配時
@@ -534,9 +542,18 @@ namespace K12.Club.Volunteer
                     SCJoin scj = new SCJoin();
                     一個社團檢查 一社團 = CLUBCheckDic[clubID];
 
+                    //如果社團已滿
                     if (!一社團.人數未滿)
                     {
-                        continue;
+                        if (StudentDic.ContainsKey(StudentID))
+                        {
+                            一名學生 一學生 = StudentDic[StudentID];
+                            sb_Log.AppendLine(string.Format("序號「{0}」班級「{1}」學生「{2}」開始進行第「{3}」志願分配", ran._Index, 一學生.class_name, 一學生.student_name, NumberIndex.ToString()));
+                            sb_Log.AppendLine(string.Format("分配失敗原因：社團「{0}」人數已滿", 一社團._ClubObj.ClubName));
+                            sb_Log.AppendLine("");
+                            return false;
+                        }
+
                     }
 
                     if (StudentDic.ContainsKey(StudentID))
@@ -554,7 +571,7 @@ namespace K12.Club.Volunteer
                                 sb_Log.AppendLine(string.Format("分配失敗原因：志願「{0}」受到科別限制「{1}」", 一社團._ClubObj.ClubName, 一學生.dept_name));
                                 sb_Log.AppendLine("");
                                 //本社團選社失敗
-                                continue;
+                                return false;
                             }
                         }
 
@@ -661,7 +678,16 @@ namespace K12.Club.Volunteer
 
                             一個社團檢查 一社團 = CLUBCheckDic[clubID];
                             if (!一社團.人數未滿)
-                                continue;
+                            {
+                                if (StudentDic.ContainsKey(StudentID))
+                                {
+                                    一名學生 一學生 = StudentDic[StudentID];
+                                    sb_Log.AppendLine(string.Format("序號「{0}」班級「{1}」學生「{2}」開始進行第「{3}」志願分配", ran._Index, 一學生.class_name, 一學生.student_name, NumberIndex.ToString()));
+                                    sb_Log.AppendLine(string.Format("分配失敗原因：社團「{0}」人數已滿", 一社團._ClubObj.ClubName));
+                                    sb_Log.AppendLine("");
+                                    return false;
+                                }
+                            }
 
                             if (StudentDic.ContainsKey(StudentID))
                             {
@@ -877,7 +903,9 @@ namespace K12.Club.Volunteer
                     }
                     #endregion
                 }
+                #endregion
             }
+
             //選社失敗
             return false;
         }
