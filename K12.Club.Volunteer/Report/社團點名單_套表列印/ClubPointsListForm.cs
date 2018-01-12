@@ -14,6 +14,7 @@ using FISCA.UDT;
 using K12.Data;
 using System.Xml;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace K12.Club.Volunteer
 {
@@ -29,10 +30,14 @@ namespace K12.Club.Volunteer
         int 學生多少個 = 0;
         int 日期多少天 = 30;
 
+        // 2018/01/02 羿均 新增日期設定檔
+        K12.Data.Configuration.ConfigData DateSetting = K12.Data.School.Configuration["DateSetting"];
+        
+
         public ClubPointsListForm()
         {
             InitializeComponent();
-
+            DateSetting.Save();
         }
 
         private void ClubPointsListForm_Load(object sender, EventArgs e)
@@ -40,10 +45,75 @@ namespace K12.Club.Volunteer
             BGW.DoWork += new DoWorkEventHandler(BGW_DoWork);
             BGW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BGW_RunWorkerCompleted);
 
-            dateTimeInput1.Value = DateTime.Today;
-            dateTimeInput2.Value = DateTime.Today.AddDays(6);
+            // 如果沒日期設定資料 
+            // DateTimeInput 預設為當天
+            // CheckBox 預設為勾選
+            if (string.IsNullOrEmpty(DateSetting["DateSetting"]))
+            {
+                dateTimeInput1.Value = DateTime.Today;
+                dateTimeInput2.Value = DateTime.Today.AddDays(6);
 
-            GetDateTime_Click(null, null);
+                GetDateTime_Click(null, null);
+                // 紀錄日期清單資料
+                string node = "";
+                foreach (DataGridViewRow dr in dataGridViewX1.Rows)
+                {
+                    node += "<Dgv date = \"" + dr.Cells["Column1"].Value + "\" week = \"" + dr.Cells["column2"].Value + "\"></Dgv>";
+                }
+
+                DateSetting["DateSetting"] = string.Format(@"<DateSetting><Weeks><Week name = ""Monday"" checked = ""true""/><Week name = ""Tuesday"" checked = ""true"" /><Week name = ""Wednesday"" checked = ""true"" /><Week name = ""Thursday"" checked = ""true"" /><Week name = ""Friday"" checked = ""true"" /></Weeks><StarDate Date = ""{0}"" ></StarDate><EndDate Date = ""{1}"" ></EndDate><DataGridView>{2}</DataGridView></DateSetting>"
+                , DateTime.Today, DateTime.Today.AddDays(6),node);
+                DateSetting.Save();
+            }
+            // 如果有日期設定資料
+            if (DateSetting.Contains("DateSetting") && !string.IsNullOrEmpty(DateSetting["DateSetting"]))
+            {
+                XmlElement _DateSetting = K12.Data.XmlHelper.LoadXml(DateSetting["DateSetting"]);
+                XDocument _dateSetting = XDocument.Parse(_DateSetting.OuterXml);
+                // Init DateTimeInput
+                DateTime StarDate = DateTime.Parse(_dateSetting.Element("DateSetting").Element("StarDate").Attribute("Date").Value);
+                DateTime EndDate = DateTime.Parse(_dateSetting.Element("DateSetting").Element("EndDate").Attribute("Date").Value);
+                dateTimeInput1.Value = StarDate;
+                dateTimeInput2.Value = EndDate;
+                // Init CheckBox
+                List<XElement> Weeks = _dateSetting.Element("DateSetting").Element("Weeks").Elements("Week").ToList();
+                foreach (XElement week in Weeks)
+                {
+                    if (week.Attribute("name").Value == "Monday")
+                    {
+                        cbDay1.Checked = bool.Parse(week.Attribute("checked").Value);
+                    }
+                    if (week.Attribute("name").Value == "Tuesday")
+                    {
+                        cbDay2.Checked = bool.Parse(week.Attribute("checked").Value);
+                    }
+                    if (week.Attribute("name").Value == "Wednesday")
+                    {
+                        cbDay3.Checked = bool.Parse(week.Attribute("checked").Value);
+                    }
+                    if (week.Attribute("name").Value == "Thursday")
+                    {
+                        cbDay4.Checked = bool.Parse(week.Attribute("checked").Value);
+                    }
+                    if (week.Attribute("name").Value == "Friday")
+                    {
+                        cbDay5.Checked = bool.Parse(week.Attribute("checked").Value);
+                    }
+                }
+                // Init DataGridView
+                List<XElement> Dgv = _dateSetting.Element("DateSetting").Element("DataGridView").Elements("Dgv").ToList();
+                foreach (XElement dgvr in Dgv)
+                {
+                    DataGridViewRow dr = new DataGridViewRow();
+                    dr.CreateCells(dataGridViewX1);
+
+                    dr.Cells[0].Value = dgvr.Attribute("date").Value;
+                    dr.Cells[1].Value = dgvr.Attribute("week").Value;
+
+                    dataGridViewX1.Rows.Add(dr);
+                }
+
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -81,6 +151,19 @@ namespace K12.Club.Volunteer
             btnSave.Enabled = false;
             BGW.RunWorkerAsync(dxXml.BaseElement);
 
+            // 儲存日期設定
+            // 讀取日期清單資料
+            string node = "";
+            foreach (DataGridViewRow dr in dataGridViewX1.Rows)
+            {
+                node += "<Dgv date = \"" + dr.Cells["Column1"].Value + "\" week = \"" + dr.Cells["column2"].Value + "\"></Dgv>";
+            }
+
+            string settingData = string.Format(@"<DateSetting><Weeks><Week name = ""Monday"" checked = ""{0}""/><Week name = ""Tuesday"" checked = ""{1}"" /><Week name = ""Wednesday"" checked = ""{2}"" /><Week name = ""Thursday"" checked = ""{3}"" /><Week name = ""Friday"" checked = ""{4}"" /></Weeks><StarDate Date = ""{5}"" ></StarDate><EndDate Date = ""{6}"" ></EndDate><DataGridView>{7}</DataGridView></DateSetting>"
+            ,cbDay1.Checked,cbDay2.Checked,cbDay3.Checked,cbDay4.Checked,cbDay5.Checked,dateTimeInput1.Value,dateTimeInput2.Value,node);
+
+            DateSetting["DateSetting"] = settingData;
+            DateSetting.Save();
         }
 
         void BGW_DoWork(object sender, DoWorkEventArgs e)
